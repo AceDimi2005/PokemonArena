@@ -1,12 +1,23 @@
 # Pokemon Arena
 
-### Folosiți template-ul corespunzător grupei voastre!
+Pokemon Arena este un joc de lupta intre pokemoni turn based, in termoinal, unde jucatorii isi pot alege pokemonii
+si se pot lupta intre ei folosind diferite atacuri si abilitati speciale. Scopul jocului este sa ramai in viata si sa lovesti 
+adversarul pana cand acesta ramane fara viata.
 
-| Laborant  | Link template                                |
-|-----------|----------------------------------------------|
-| Dragoș B  | https://github.com/Ionnier/oop-template      |
-| Tiberiu M | https://github.com/MaximTiberiu/oop-template |
-| Marius MC | https://github.com/mcmarius/oop-template     |
+## Funcționalități principale
+- Alegerea modului de joc: jcuator vs jucător sau jucător vs AI
+- Alegerea pokemonilor dintr-o listă predefinită( Pikachu, Bulbasaur, Charmander, Squirtle, etc)
+- Fiecare pokemon are atribute specifice: puncte de viață, puncte de atac, puncte de apărare, viteză și abilități speciale
+- In timpul luptei, jucătorii pot alege să atace, să folosească o abilitate specială sau să se apere
+- Calcularea daunelor în funcție de atributele pokemonilor și de acțiunile alese:
+  - Atacul obișnuit: reduce punctele de viață ale adversarului în funcție de punctele de atac și apărare
+  - Abilitatea specială: poate avea efecte suplimentare, cum ar fi paralizia sau arderea adversarului
+  - Apărarea: reduce daunele primite în următoarea rundă
+  - Avantajul de tip: anumite tipuri de pokemoni au avantaje sau dezavantaje împotriva altor tipuri (de exemplu, apă este eficient împotriva focului)
+  - Viteza: determină ordinea în care pokemoni acționează în fiecare rundă
+  - Loviturile critice: există o șansă ca un atac să fie un lovitură critică, cauzând daune suplimentare
+- Gestionarea stării pokemonilor: paralizat, ars, înghețat, etc.
+- Finalizarea luptei: când unul dintre pokemoni rămâne fără viata celalalt jucător câștigă
 
 ### Important!
 
