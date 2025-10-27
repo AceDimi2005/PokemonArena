@@ -18,7 +18,7 @@ public:
     Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed);
     ~Pokemon() = default;
     [[nodiscard]] const std::string& getNume() const;
-    [[nodiscard]] const std::string& getTip() const;
+    //[[nodiscard]] const std::string& getTip() const;
     [[nodiscard]] int getHP() const;
     [[nodiscard]] int getAttack() const;
     [[nodiscard]] int getDefense() const;
@@ -29,7 +29,7 @@ public:
     void primesteDamage(int damage);
 
     void setDefending(bool value);
-    [[nodiscard]] bool isDefending() const;
+    //[[nodiscard]] bool isDefending() const;
 
     void afiseazaInfo() const;
     friend std::ostream& operator<<(std::ostream& os, const Pokemon& p);

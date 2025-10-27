@@ -6,7 +6,7 @@ Pokemon::Pokemon(std::string nume, std::string tip, int hp, int attack, int defe
     : nume(std::move(nume)), tip(std::move(tip)), hp(hp), attack(attack), defense(defense), speed(speed), defending(false) {}
 
 const std::string& Pokemon::getNume() const { return nume; }
-const std::string& Pokemon::getTip() const { return tip; }
+//const std::string& Pokemon::getTip() const { return tip; }
 int Pokemon::getHP() const { return hp; }
 int Pokemon::getAttack() const { return attack; }
 int Pokemon::getDefense() const { return defense; }
@@ -14,7 +14,7 @@ int Pokemon::getSpeed() const { return speed; }
 bool Pokemon::esteViu() const { return hp > 0; }
 
 void Pokemon::setDefending(bool value) { defending = value; }
-bool Pokemon::isDefending() const { return defending; }
+//bool Pokemon::isDefending() const { return defending; }
 
 int Pokemon::ataca(Pokemon* adversar) const {
     int damage = static_cast<int>(attack - adversar->defense / 2.0);

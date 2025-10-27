@@ -49,8 +49,7 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
     Player* first;
     Player* second;
 
-    std::random_device rd;
-    std::mt19937 gen(rd());
+    std::mt19937 gen(std::random_device{}());
     std::uniform_int_distribution<> distrib(1, 3);
 
     if (poke1->getSpeed() > poke2->getSpeed()) {
