@@ -43,8 +43,8 @@ void Arena::startGame() const {
 }
 
 void Arena::desfasoaraLupta(Player& p1, Player& p2) {
-   Pokemon* poke1 = p1.getPokemon();
-    Pokemon* poke2 = p2.getPokemon();
+    const Pokemon* poke1 = p1.getPokemon();
+    const Pokemon* poke2 = p2.getPokemon();
 
     Player* first;
     Player* second;
@@ -99,7 +99,7 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
             }
         }
 
-        if (!(poke1->esteViu() && poke2->esteViu())) break;
+        //if (!(poke1->esteViu() && poke2->esteViu())) break;
 
         {
             Pokemon* attacker = second->getPokemon();
