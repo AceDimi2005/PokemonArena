@@ -2,7 +2,7 @@
 #include <iostream>
 
 Pokemon::Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed)
-    : nume(nume), tip(tip), hp(hp), attack(attack), defense(defense), speed(speed) {}
+    : nume(nume), tip(tip), hp(hp), attack(attack), defense(defense), speed(speed), defending(false) {}
 
 std::string Pokemon::getNume() const { return nume; }
 std::string Pokemon::getTip() const { return tip; }
