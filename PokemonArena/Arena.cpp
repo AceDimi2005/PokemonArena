@@ -16,7 +16,7 @@ Arena::~Arena() {
 }
 
 void Arena::startGame() const {
-    std::random_device rd;
+    //std::random_device rd;
     std::cout << "=== Pokemon Arena ===\n";
     std::cout << "1. Player vs Player\n";
     std::cout << "2. Player vs AI\n";
