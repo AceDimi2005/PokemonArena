@@ -16,7 +16,7 @@ public:
 
     void alegePokemon(const std::vector<Pokemon*>& listaPokemoni, bool eAI = false);
     [[nodiscard]] Pokemon* getPokemon() const;
-    [[nodiscard]] std::string getNume() const;
+    [[nodiscard]] const std::string& getNume() const;
 
 };
 

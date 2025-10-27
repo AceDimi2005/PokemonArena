@@ -5,8 +5,8 @@
 Pokemon::Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed)
     : nume(std::move(nume)), tip(std::move(tip)), hp(hp), attack(attack), defense(defense), speed(speed), defending(false) {}
 
-std::string Pokemon::getNume() const { return nume; }
-std::string Pokemon::getTip() const { return tip; }
+const std::string& Pokemon::getNume() const { return nume; }
+const std::string& Pokemon::getTip() const { return tip; }
 int Pokemon::getHP() const { return hp; }
 int Pokemon::getAttack() const { return attack; }
 int Pokemon::getDefense() const { return defense; }

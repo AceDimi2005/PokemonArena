@@ -31,8 +31,8 @@ void Arena::startGame() const {
     p1.alegePokemon(listaPokemoni, false);
     p2.alegePokemon(listaPokemoni, mod == 2);
 
-    Pokemon* poke1 = p1.getPokemon();
-    Pokemon* poke2 = p2.getPokemon();
+    const Pokemon* poke1 = p1.getPokemon();
+    const Pokemon* poke2 = p2.getPokemon();
 
     std::cout << "\n=== Lupta incepe! ===\n";
     poke1->afiseazaInfo();
@@ -99,7 +99,7 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
             }
         }
 
-        if (!poke1->esteViu() || !poke2->esteViu()) break;
+        if (!(poke1->esteViu() && poke2->esteViu())) break;
 
         {
             Pokemon* attacker = second->getPokemon();

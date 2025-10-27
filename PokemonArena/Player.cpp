@@ -35,4 +35,4 @@ void Player::alegePokemon(const std::vector<Pokemon*>& listaPokemoni, bool eAI) 
 }
 
 Pokemon* Player::getPokemon() const { return pokemon; }
-std::string Player::getNume() const { return nume; }
+const std::string& Player::getNume() const { return nume; }
