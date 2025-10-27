@@ -12,6 +12,7 @@ private:
     int attack;
     int defense;
     int speed;
+    bool defending;
 
 public:
     Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed);
@@ -32,8 +33,7 @@ public:
 
     void afiseazaInfo() const;
     friend std::ostream& operator<<(std::ostream& os, const Pokemon& p);
-private:
-    bool defending = false;
+
 };
 
 #endif
