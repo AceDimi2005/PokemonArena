@@ -1,18 +1,17 @@
 #include "Player.h"
 #include <iostream>
-#include <limits>
-#include <cstdlib>
-#include <ctime>
+#include <utility>
+#include <random>
 
-Player::Player(std::string nume) : nume(nume), pokemon(nullptr) {}
+Player::Player(std::string nume) : nume(std::move(nume)), pokemon(nullptr) {}
 
 Player::~Player() {
-    if (pokemon)
+
         delete pokemon;
 }
 
 
-void Player::alegePokemon(std::vector<Pokemon*>& listaPokemoni, bool eAI) {
+void Player::alegePokemon(const std::vector<Pokemon*>& listaPokemoni, bool eAI) {
     std::cout << "\n" << nume << ", alege-ti Pokemonul!\n";
     for (size_t i = 0; i < listaPokemoni.size(); i++) {
         std::cout << i + 1 << ". ";
@@ -22,7 +21,10 @@ void Player::alegePokemon(std::vector<Pokemon*>& listaPokemoni, bool eAI) {
 
     int alegere;
     if (eAI) {
-        alegere = rand() % listaPokemoni.size();
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> distrib(0, static_cast<int>(listaPokemoni.size()) - 1);
+        alegere = distrib(gen);
         std::cout << nume << " (AI) a ales " << listaPokemoni[alegere]->getNume() << "!\n";
     } else {
         std::cout << "Introdu numarul Pokemonului ales: ";

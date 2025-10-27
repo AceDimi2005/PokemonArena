@@ -16,20 +16,20 @@ private:
 
 public:
     Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed);
-    ~Pokemon() {}
-    std::string getNume() const;
-    std::string getTip() const;
-    int getHP() const;
-    int getAttack() const;
-    int getDefense() const;
-    int getSpeed() const;
-    bool esteViu() const;
+    ~Pokemon() = default;
+    [[nodiscard]] std::string getNume() const;
+    [[nodiscard]] std::string getTip() const;
+    [[nodiscard]] int getHP() const;
+    [[nodiscard]] int getAttack() const;
+    [[nodiscard]] int getDefense() const;
+    [[nodiscard]] int getSpeed() const;
+    [[nodiscard]] bool esteViu() const;
 
-    int ataca(Pokemon* adversar);
+    int ataca(Pokemon* adversar) const;
     void primesteDamage(int damage);
 
     void setDefending(bool value);
-    bool isDefending() const;
+    [[nodiscard]] bool isDefending() const;
 
     void afiseazaInfo() const;
     friend std::ostream& operator<<(std::ostream& os, const Pokemon& p);

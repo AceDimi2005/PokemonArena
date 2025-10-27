@@ -1,8 +1,9 @@
 #include "Pokemon.h"
 #include <iostream>
+#include <utility>
 
 Pokemon::Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed)
-    : nume(nume), tip(tip), hp(hp), attack(attack), defense(defense), speed(speed), defending(false) {}
+    : nume(std::move(nume)), tip(std::move(tip)), hp(hp), attack(attack), defense(defense), speed(speed), defending(false) {}
 
 std::string Pokemon::getNume() const { return nume; }
 std::string Pokemon::getTip() const { return tip; }
@@ -15,8 +16,8 @@ bool Pokemon::esteViu() const { return hp > 0; }
 void Pokemon::setDefending(bool value) { defending = value; }
 bool Pokemon::isDefending() const { return defending; }
 
-int Pokemon::ataca(Pokemon* adversar) {
-    int damage = attack - adversar->defense / 2;
+int Pokemon::ataca(Pokemon* adversar) const {
+    int damage = static_cast<int>(attack - adversar->defense / 2.0);
     if (damage < 0) damage = 0;
     adversar->primesteDamage(damage);
     std::cout << nume << " a atacat " << adversar->getNume() << " si a provocat " << damage << " damage!\n";
