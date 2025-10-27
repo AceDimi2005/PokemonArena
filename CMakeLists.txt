@@ -49,7 +49,10 @@ include(cmake/CopyHelper.cmake)
 
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
 add_executable(${MAIN_EXECUTABLE_NAME}
-    main.cpp
+        PokemonArena/Arena.cpp
+        PokemonArena/main.cpp
+        PokemonArena/Player.cpp
+        PokemonArena/Pokemon.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
