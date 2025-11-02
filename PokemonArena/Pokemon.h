@@ -22,7 +22,6 @@ public:
     [[nodiscard]] const std::string& getNume() const;
     [[nodiscard]] const std::string& getTip() const;
     [[nodiscard]] int getHP() const;
-    [[nodiscard]] int getAttack() const;
     [[nodiscard]] int getDefense() const;
     [[nodiscard]] int getSpeed() const;
     [[nodiscard]] bool esteViu() const;

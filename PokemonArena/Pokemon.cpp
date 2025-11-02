@@ -67,7 +67,6 @@ int Pokemon::folosesteAbilitate(Pokemon* adversar) {
 const std::string& Pokemon::getNume() const { return nume; }
 const std::string& Pokemon::getTip() const { return tip; }
 int Pokemon::getHP() const { return hp; }
-int Pokemon::getAttack() const { return attack; }
 int Pokemon::getDefense() const { return defense; }
 int Pokemon::getSpeed() const { return speed; }
 bool Pokemon::esteViu() const { return hp > 0; }
