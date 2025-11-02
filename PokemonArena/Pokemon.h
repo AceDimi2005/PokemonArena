@@ -6,6 +6,8 @@
 
 class Pokemon {
 private:
+    int cooldown;
+    int cooldownMax;
     std::string nume;
     std::string tip;
     int hp;
@@ -18,20 +20,25 @@ public:
     Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed);
     ~Pokemon() = default;
     [[nodiscard]] const std::string& getNume() const;
-    //[[nodiscard]] const std::string& getTip() const;
+    [[nodiscard]] const std::string& getTip() const;
     [[nodiscard]] int getHP() const;
     [[nodiscard]] int getAttack() const;
     [[nodiscard]] int getDefense() const;
     [[nodiscard]] int getSpeed() const;
     [[nodiscard]] bool esteViu() const;
 
+    void reseteazaAbilitatea();
+    bool poateFolosiiAbilitatea() const;
+    void reduceCooldown();
+    int folosesteAbilitate(Pokemon* adversar);
+
+    static float eficientaTip(const std::string& tipAtacant, const std::string& tipAdversar);
+
     int ataca(Pokemon* adversar) const;
     void primesteDamage(int damage);
 
     void setDefending(bool value);
-    //[[nodiscard]] bool isDefending() const;
 
-    void afiseazaInfo() const;
     friend std::ostream& operator<<(std::ostream& os, const Pokemon& p);
 
 };

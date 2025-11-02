@@ -4,10 +4,10 @@
 
 Arena::Arena() {
 
-    listaPokemoni.push_back(new Pokemon("Pikachu", "Electric", 120, 55, 40, 90));
-    listaPokemoni.push_back(new Pokemon("Bulbasaur", "Iarba",   140, 49, 49, 45));
-    listaPokemoni.push_back(new Pokemon("Charmander", "Foc",    120, 52, 43, 65));
-    listaPokemoni.push_back(new Pokemon("Squirtle", "Apa",      130, 48, 65, 43));
+    listaPokemoni.push_back(new Pokemon("Pikachu", "Electric", 1200, 55, 40, 90));
+    listaPokemoni.push_back(new Pokemon("Bulbasaur", "Iarba",   1400, 49, 49, 45));
+    listaPokemoni.push_back(new Pokemon("Charmander", "Foc",    1200, 52, 43, 65));
+    listaPokemoni.push_back(new Pokemon("Squirtle", "Apa",      1300, 48, 65, 43));
 }
 
 Arena::~Arena() {
@@ -16,7 +16,6 @@ Arena::~Arena() {
 }
 
 void Arena::startGame() const {
-    //std::random_device rd;
     std::cout << "=== Pokemon Arena ===\n";
     std::cout << "1. Player vs Player\n";
     std::cout << "2. Player vs AI\n";
@@ -35,8 +34,8 @@ void Arena::startGame() const {
     const Pokemon* poke2 = p2.getPokemon();
 
     std::cout << "\n=== Lupta incepe! ===\n";
-    poke1->afiseazaInfo();
-    poke2->afiseazaInfo();
+    std::cout << *poke1 << "\n";
+    std::cout << *poke2 << "\n";
 
     desfasoaraLupta(p1, p2);
 
@@ -86,20 +85,14 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
                 attacker->setDefending(true);
                 std::cout << attacker->getNume() << " se apara!\n";
             } else if (actiune == 3) {
-                int baseDamage = attacker->getAttack();
-                if (baseDamage < 0) baseDamage = 0;
-                int damage = static_cast<int>(std::round(baseDamage * 1.5));
-                std::cout << attacker->getNume() << " foloseste o abilitate speciala si provoaca "
-                          << damage << " damage!\n";
-                defender->primesteDamage(damage);
+                attacker->folosesteAbilitate(defender);
             } else {
                 std::cout << "Actiune invalida. Se considera atac normal.\n";
                 attacker->ataca(defender);
             }
         }
 
-        //if (!(poke1->esteViu() && poke2->esteViu())) break;
-
+        if (poke1->esteViu() && poke2->esteViu())
         {
             Pokemon* attacker = second->getPokemon();
             Pokemon* defender = first->getPokemon();
@@ -123,12 +116,7 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
                 attacker->setDefending(true);
                 std::cout << attacker->getNume() << " se apara!\n";
             } else if (actiune == 3) {
-                int baseDamage = attacker->getAttack() - defender->getDefense()/2;
-                if (baseDamage < 0) baseDamage = 0;
-                int damage = static_cast<int>(std::round(baseDamage * 1.5));
-                std::cout << attacker->getNume() << " foloseste o abilitate speciala si provoaca "
-                          << damage << " damage!\n";
-                defender->primesteDamage(damage);
+                attacker->folosesteAbilitate(defender);
             } else {
                 std::cout << "Actiune invalida. Se considera atac normal.\n";
                 attacker->ataca(defender);
@@ -141,6 +129,9 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
 
 
     }
+    p1.getPokemon()->reduceCooldown();
+    p2.getPokemon()->reduceCooldown();
+
     if (poke1->esteViu())
         std::cout << p1.getNume() << " a câștigat!\n";
     else
