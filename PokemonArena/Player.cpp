@@ -15,7 +15,7 @@ void Player::alegePokemon(const std::vector<Pokemon*>& listaPokemoni, bool eAI) 
     std::cout << "\n" << nume << ", alege-ti Pokemonul!\n";
     for (size_t i = 0; i < listaPokemoni.size(); i++) {
         std::cout << i + 1 << ". ";
-        listaPokemoni[i]->afiseazaInfo();
+        std::cout << *listaPokemoni[i] << "\n";
     }
 
 
