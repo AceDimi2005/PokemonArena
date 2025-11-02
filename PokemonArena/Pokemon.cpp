@@ -27,7 +27,7 @@ void Pokemon::reduceCooldown() {
 
 int Pokemon::folosesteAbilitate(Pokemon* adversar) {
     if (!poateFolosiiAbilitatea()) {
-        std::cout << nume << " nu își poate folosi abilitatea încă! (" << cooldown << " runde rămase)\n";
+        std::cout << nume << " nu isi poate folosi abilitatea inca! (" << cooldown << " runde ramase)\n";
         return 0;
     }
 
@@ -52,7 +52,7 @@ int Pokemon::folosesteAbilitate(Pokemon* adversar) {
     if (damage < 0) damage = 0;
 
     adversar->primesteDamage(damage);
-    std::cout << nume << " a folosit abilitatea specială și a provocat "
+    std::cout << nume << " a folosit abilitatea speciala si a provocat "
           << damage << " damage adversarului!\n";
     reseteazaAbilitatea();
 
@@ -86,7 +86,7 @@ void Pokemon::setDefending(bool value) { defending = value; }
 }
 
 int Pokemon::ataca(Pokemon* adversar) const {
-    float factor = eficientaTip(tip, adversar->getTip());
+    const float factor = eficientaTip(tip, adversar->getTip());
     int damage = static_cast<int>((attack - adversar->getDefense() / 2.0) * factor);
     if (damage < 0) damage = 0;
     adversar->primesteDamage(damage);

@@ -10,6 +10,8 @@ Player::~Player() {
         delete pokemon;
 }
 
+void Player::setPokemon(Pokemon* p) {pokemon = p;}
+
 
 void Player::alegePokemon(const std::vector<Pokemon*>& listaPokemoni, bool eAI) {
     std::cout << "\n" << nume << ", alege-ti Pokemonul!\n";
@@ -36,3 +38,8 @@ void Player::alegePokemon(const std::vector<Pokemon*>& listaPokemoni, bool eAI) 
 
 Pokemon* Player::getPokemon() const { return pokemon; }
 const std::string& Player::getNume() const { return nume; }
+
+std::ostream& operator<<(std::ostream& os, const Player& p) {
+    os << p.getNume();
+    return os;
+}

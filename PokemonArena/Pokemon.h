@@ -27,7 +27,7 @@ public:
     [[nodiscard]] bool esteViu() const;
 
     void reseteazaAbilitatea();
-    bool poateFolosiiAbilitatea() const;
+    [[nodiscard]] bool poateFolosiiAbilitatea() const;
     void reduceCooldown();
     int folosesteAbilitate(Pokemon* adversar);
 

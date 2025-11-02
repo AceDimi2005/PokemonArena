@@ -8,14 +8,14 @@
 class Arena {
 private:
     std::vector<Pokemon*> listaPokemoni;
-
-   static void desfasoaraLupta(Player& p1, Player& p2);
+    static void desfasoaraLupta(Player& p1, Player& p2);
 
 public:
     Arena();
     ~Arena();
 
     void startGame() const;
+    static void salveazaProgres(const Player& p1, const Player& p2);
 
     friend std::ostream& operator<<(std::ostream& os, const Arena& a);
 };

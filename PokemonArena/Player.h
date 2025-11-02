@@ -14,9 +14,12 @@ public:
     explicit Player(std::string nume = "Player");
     ~Player();
 
+    void setPokemon(Pokemon* pokemon);
+
     void alegePokemon(const std::vector<Pokemon*>& listaPokemoni, bool eAI = false);
     [[nodiscard]] Pokemon* getPokemon() const;
     [[nodiscard]] const std::string& getNume() const;
+    friend std::ostream& operator<<(std::ostream& os, const Player& p);
 
 };
 
