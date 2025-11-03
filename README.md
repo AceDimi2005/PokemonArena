@@ -6,6 +6,7 @@ adversarul pana cand acesta ramane fara viata.
 
 ## Funcționalități principale
 - Alegerea modului de joc: jcuator vs jucător sau jucător vs AI
+- Alegerea numelor jucatorilor
 - Alegerea pokemonilor dintr-o listă predefinită( Pikachu, Bulbasaur, Charmander, Squirtle, etc)
 - Fiecare pokemon are atribute specifice: puncte de viață, puncte de atac, puncte de apărare, viteză și abilități speciale
 - In timpul luptei, jucătorii pot alege să atace, să folosească o abilitate specială sau să se apere
@@ -17,6 +18,8 @@ adversarul pana cand acesta ramane fara viata.
   - Viteza: determină ordinea în care pokemoni acționează în fiecare rundă
   - Loviturile critice: există o șansă ca un atac să fie un lovitură critică, cauzând daune suplimentare
 - Gestionarea stării pokemonilor: paralizat, ars, înghețat, etc.
+- Leaderboard cu castigatorii
+- Salvarea jocului dupa fiecare runda si posibilitatea de a il continua mai tarziu
 - Finalizarea luptei: când unul dintre pokemoni rămâne fără viata celalalt jucător câștigă
 
 ### Important!

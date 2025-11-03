@@ -82,7 +82,7 @@ void Arena::startGame() const {
     std::cout << "=== Pokemon Arena ===\n";
     std::cout << "1. Continuă ultimul meci\n";
     std::cout << "2. Joc nou\n";
-    std::cout << "3. Afisează leaderboard-ul\n";
+    std::cout << "3. Afiseaza leaderboard-ul\n";
     std::cout << "Alege optiunea: ";
 
     int opt;
