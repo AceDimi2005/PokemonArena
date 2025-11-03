@@ -1,4 +1,4 @@
-#include "Player.h"
+#include "../headers/Player.h"
 #include <iostream>
 #include <utility>
 #include <random>
@@ -8,6 +8,28 @@ Player::Player(std::string nume) : nume(std::move(nume)), pokemon(nullptr) {}
 Player::~Player() {
 
         delete pokemon;
+}
+
+Player::Player(const Player& other) : nume(other.nume) {
+    if (other.pokemon)
+        pokemon = new Pokemon(*other.pokemon);
+    else
+        pokemon = nullptr;
+}
+
+Player& Player::operator=(const Player& other) {
+    if (this == &other)
+        return *this;
+
+    nume = other.nume;
+
+    delete pokemon;
+    if (other.pokemon)
+        pokemon = new Pokemon(*other.pokemon);
+    else
+        pokemon = nullptr;
+
+    return *this;
 }
 
 void Player::setPokemon(Pokemon* p) {pokemon = p;}

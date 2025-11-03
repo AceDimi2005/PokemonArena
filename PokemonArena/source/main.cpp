@@ -1,4 +1,4 @@
-#include "Arena.h"
+#include "../headers/Arena.h"
 
 int main() {
     Arena arena;

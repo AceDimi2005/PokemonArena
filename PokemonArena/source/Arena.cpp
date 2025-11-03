@@ -1,4 +1,4 @@
-#include "Arena.h"
+#include "../headers/Arena.h"
 #include <random>
 #include <fstream>
 
@@ -217,8 +217,8 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
         }
 
 
-        //if (poke1->esteViu() && poke2->esteViu())
-        //{
+        if (attacker->esteViu() && defender->esteViu())
+        {
         attacker = second->getPokemon();
         defender = first->getPokemon();
 
@@ -245,7 +245,7 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
             std::cout << "Actiune invalida. Se considera atac normal.\n";
             attacker->ataca(defender);
         }
-        //}
+        }
 
         std::cout << "\n=== Stare dupa runda ===\n";
         std::cout << p1.getNume() << ": " << p1.getPokemon()->getHP() << " HP\n";
