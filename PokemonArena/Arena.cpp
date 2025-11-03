@@ -60,7 +60,7 @@ void Arena::afiseazaLeaderboard() {
     }
     fout.close();
 
-    std::cout << "Leaderboard actualizat! 🏆\n";
+    std::cout << "Leaderboard actualizat!\n";
 }
 
 void Arena::salveazaProgres(const Player& p1, const Player& p2){
@@ -91,7 +91,7 @@ void Arena::startGame() const {
     if (opt == 1) {
         std::ifstream fin("save.txt");
         if (!fin.is_open()) {
-            std::cout << "Nu există un fișier de salvare.\n";
+            std::cout << "Nu există un fisier de salvare.\n";
         } else {
             std::string nume1, poke1, nume2, poke2;
             int hp1, hp2;
