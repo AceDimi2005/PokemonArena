@@ -14,6 +14,54 @@ Arena::~Arena() {
     for (auto p : listaPokemoni) delete p;
 
 }
+void Arena::afiseazaLeaderboard() {
+    std::ifstream fin("leaderboard.txt");
+    if (!fin.is_open()) {
+        std::cout << "Nu exista leaderboard inca.\n";
+        return;
+    }
+
+    std::cout << "\n=== LEADERBOARD ===\n";
+    std::string n;
+    int s;
+    while (fin >> n >> s)
+        std::cout << n << " — " << s << " victorii\n";
+
+    std::cout << "==========================\n";
+    fin.close();
+}
+ void Arena::actualizeazaLeaderboard(const std::string& castigator) {
+    std::ifstream fin("leaderboard.txt");
+    std::vector<std::string> nume;
+    std::vector<int> scoruri;
+
+    std::string n;
+    int s;
+    bool gasit = false;
+
+    while (fin >> n >> s) {
+        if (n == castigator) {
+            s++;
+            gasit = true;
+        }
+        nume.push_back(n);
+        scoruri.push_back(s);
+    }
+    fin.close();
+
+    if (!gasit) {
+        nume.push_back(castigator);
+        scoruri.push_back(1);
+    }
+
+    std::ofstream fout("leaderboard.txt");
+    for (size_t i = 0; i < nume.size(); i++) {
+        fout << nume[i] << " " << scoruri[i] << "\n";
+    }
+    fout.close();
+
+    std::cout << "Leaderboard actualizat! 🏆\n";
+}
 
 void Arena::salveazaProgres(const Player& p1, const Player& p2){
     std::ofstream fout("save.txt");
@@ -34,6 +82,7 @@ void Arena::startGame() const {
     std::cout << "=== Pokemon Arena ===\n";
     std::cout << "1. Continuă ultimul meci\n";
     std::cout << "2. Joc nou\n";
+    std::cout << "3. Afisează leaderboard-ul\n";
     std::cout << "Alege optiunea: ";
 
     int opt;
@@ -77,38 +126,43 @@ void Arena::startGame() const {
             }
         }
     }
+    else if (opt == 2) {
+        std::cout << "=== Pokemon Arena ===\n";
+        std::cout << "1. Player vs Player\n";
+        std::cout << "2. Player vs AI\n";
+        std::cout << "Alege modul: ";
 
-    std::cout << "=== Pokemon Arena ===\n";
-    std::cout << "1. Player vs Player\n";
-    std::cout << "2. Player vs AI\n";
-    std::cout << "Alege modul: ";
+        int mod;
+        std::cin >> mod;
+        std::string numeP1, numeP2;
+        std::cout << "Introdu numele pentru Player 1: ";
+        std::cin >> numeP1;
+        if (mod == 1) {
+            std::cout << "Introdu numele pentru Player 2: ";
+            std::cin >> numeP2;
+        } else {
+            numeP2 = "AI";
+        }
+        Player p1(numeP1);
+        Player p2(numeP2);
 
-    int mod;
-    std::cin >> mod;
-    std::string numeP1, numeP2;
-    std::cout << "Introdu numele pentru Player 1: ";
-    std::cin >> numeP1;
-    if (mod == 1) {
-        std::cout << "Introdu numele pentru Player 2: ";
-        std::cin >> numeP2;
-    } else {
-        numeP2 = "AI";
+        p1.alegePokemon(listaPokemoni, false);
+        p2.alegePokemon(listaPokemoni, mod == 2);
+
+        const Pokemon* poke1 = p1.getPokemon();
+        const Pokemon* poke2 = p2.getPokemon();
+
+        std::cout << "\n=== Lupta incepe! ===\n";
+        std::cout << p1 << " vs " << p2 << "\n";
+        std::cout << *poke1 << "\n";
+        std::cout << *poke2 << "\n";
+
+        desfasoaraLupta(p1, p2);
+
+    } else if (opt == 3) {
+        afiseazaLeaderboard();
     }
-    Player p1(numeP1);
-    Player p2(numeP2);
 
-    p1.alegePokemon(listaPokemoni, false);
-    p2.alegePokemon(listaPokemoni, mod == 2);
-
-    const Pokemon* poke1 = p1.getPokemon();
-    const Pokemon* poke2 = p2.getPokemon();
-
-    std::cout << "\n=== Lupta incepe! ===\n";
-    std::cout << p1 << " vs " << p2 << "\n";
-    std::cout << *poke1 << "\n";
-    std::cout << *poke2 << "\n";
-
-    desfasoaraLupta(p1, p2);
 
 }
 
@@ -135,62 +189,62 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
 
     while (poke1->esteViu() && poke2->esteViu()) {
 
-            Pokemon* attacker = first->getPokemon();
-            Pokemon* defender = second->getPokemon();
+        Pokemon* attacker = first->getPokemon();
+        Pokemon* defender = second->getPokemon();
 
-            std::cout << "\n" << first->getNume() << ", alege o actiune:\n";
-            std::cout << "1. Atac normal\n";
-            std::cout << "2. Aparare\n";
-            std::cout << "3. Abilitate speciala\n> ";
+        std::cout << "\n" << first->getNume() << ", alege o actiune:\n";
+        std::cout << "1. Atac normal\n";
+        std::cout << "2. Aparare\n";
+        std::cout << "3. Abilitate speciala\n> ";
 
-            int actiune;
-            if (first->getNume() == "AI") {
-                actiune = distrib(gen);
-            } else {
-                std::cin >> actiune;
-            }
+        int actiune;
+        if (first->getNume() == "AI") {
+            actiune = distrib(gen);
+        } else {
+            std::cin >> actiune;
+        }
 
-            if (actiune == 1) {
-                attacker->ataca(defender);
-            } else if (actiune == 2) {
-                attacker->setDefending(true);
-                std::cout << attacker->getNume() << " se apara!\n";
-            } else if (actiune == 3) {
-                attacker->folosesteAbilitate(defender);
-            } else {
-                std::cout << "Actiune invalida. Se considera atac normal.\n";
-                attacker->ataca(defender);
-            }
+        if (actiune == 1) {
+            attacker->ataca(defender);
+        } else if (actiune == 2) {
+            attacker->setDefending(true);
+            std::cout << attacker->getNume() << " se apara!\n";
+        } else if (actiune == 3) {
+            attacker->folosesteAbilitate(defender);
+        } else {
+            std::cout << "Actiune invalida. Se considera atac normal.\n";
+            attacker->ataca(defender);
+        }
 
 
         //if (poke1->esteViu() && poke2->esteViu())
         //{
-            attacker = second->getPokemon();
-            defender = first->getPokemon();
+        attacker = second->getPokemon();
+        defender = first->getPokemon();
 
-            std::cout << "\n" << second->getNume() << ", alege o actiune:\n";
-            std::cout << "1. Atac normal\n";
-            std::cout << "2. Aparare\n";
-            std::cout << "3. Abilitate speciala\n> ";
+        std::cout << "\n" << second->getNume() << ", alege o actiune:\n";
+        std::cout << "1. Atac normal\n";
+        std::cout << "2. Aparare\n";
+        std::cout << "3. Abilitate speciala\n> ";
 
-            if (second->getNume() == "AI") {
-                actiune = distrib(gen);
-                std::cout << actiune << "\n";
-            } else {
-                std::cin >> actiune;
-            }
+        if (second->getNume() == "AI") {
+            actiune = distrib(gen);
+            std::cout << actiune << "\n";
+        } else {
+            std::cin >> actiune;
+        }
 
-            if (actiune == 1) {
-                attacker->ataca(defender);
-            } else if (actiune == 2) {
-                attacker->setDefending(true);
-                std::cout << attacker->getNume() << " se apara!\n";
-            } else if (actiune == 3) {
-                attacker->folosesteAbilitate(defender);
-            } else {
-                std::cout << "Actiune invalida. Se considera atac normal.\n";
-                attacker->ataca(defender);
-            }
+        if (actiune == 1) {
+            attacker->ataca(defender);
+        } else if (actiune == 2) {
+            attacker->setDefending(true);
+            std::cout << attacker->getNume() << " se apara!\n";
+        } else if (actiune == 3) {
+            attacker->folosesteAbilitate(defender);
+        } else {
+            std::cout << "Actiune invalida. Se considera atac normal.\n";
+            attacker->ataca(defender);
+        }
         //}
 
         std::cout << "\n=== Stare dupa runda ===\n";
@@ -203,12 +257,19 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
         salveazaProgres(p1, p2);
 
     }
-
-
-    if (poke1->esteViu())
+    std::string castigator;
+    if (poke1->esteViu()){
         std::cout << p1.getNume() << " a castigat!\n";
-    else
+        castigator = p1.getNume();
+    }
+    else{
         std::cout << p2.getNume() << " a castigat!\n";
+        castigator = p2.getNume();
+    }
+    actualizeazaLeaderboard(castigator);
+
+    std::remove("save.txt");
+
 }
 
 std::ostream& operator<<(std::ostream& os, const Arena& a) {

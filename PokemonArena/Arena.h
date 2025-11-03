@@ -9,6 +9,7 @@ class Arena {
 private:
     std::vector<Pokemon*> listaPokemoni;
     static void desfasoaraLupta(Player& p1, Player& p2);
+    //std::string castigator;
 
 public:
     Arena();
@@ -16,7 +17,8 @@ public:
 
     void startGame() const;
     static void salveazaProgres(const Player& p1, const Player& p2);
-
+    static void actualizeazaLeaderboard(const std::string& castigator);
+    static void afiseazaLeaderboard();
     friend std::ostream& operator<<(std::ostream& os, const Arena& a);
 };
 
