@@ -7,13 +7,12 @@
 
 class Arena {
 private:
-    std::vector<Pokemon*> listaPokemoni;
+    std::vector<Pokemon> listaPokemoni;
     static void desfasoaraLupta(Player& p1, Player& p2);
-    //std::string castigator;
 
 public:
     Arena();
-    ~Arena();
+    ~Arena() = default;
 
     void startGame() const;
     static void salveazaProgres(const Player& p1, const Player& p2);

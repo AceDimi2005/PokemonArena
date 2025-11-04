@@ -2,6 +2,7 @@
 #include <iostream>
 #include <utility>
 
+Pokemon::Pokemon() : nume(""), tip(""), hp(0), attack(0), defense(0), speed(0), defending(false), cooldown(0), cooldownMax(0) {}
 Pokemon::Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed)
     : nume(std::move(nume)), tip(std::move(tip)), hp(hp), attack(attack), defense(defense), speed(speed), defending(false) {
     if (this->tip == "Foc") cooldownMax = 3;
@@ -25,13 +26,13 @@ void Pokemon::reduceCooldown() {
         cooldown--;
 }
 
-int Pokemon::folosesteAbilitate(Pokemon* adversar) {
+int Pokemon::folosesteAbilitate(Pokemon& adversar) {
     if (!poateFolosiiAbilitatea()) {
         std::cout << nume << " nu isi poate folosi abilitatea inca! (" << cooldown << " runde ramase)\n";
         return 0;
     }
 
-    float factor = eficientaTip(tip, adversar->getTip());
+    float factor = eficientaTip(tip, adversar.getTip());
     float power = 1.5f;
 
     if (tip == "Foc") {
@@ -48,10 +49,10 @@ int Pokemon::folosesteAbilitate(Pokemon* adversar) {
         power = 1.8f;
     }
 
-    int damage = static_cast<int>((attack * power - adversar->getDefense() / 3.0) * factor);
+    int damage = static_cast<int>((attack * power - adversar.getDefense() / 3.0) * factor);
     if (damage < 0) damage = 0;
 
-    adversar->primesteDamage(damage);
+    adversar.primesteDamage(damage);
     std::cout << nume << " a folosit abilitatea speciala si a provocat "
           << damage << " damage adversarului!\n";
     reseteazaAbilitatea();
@@ -85,12 +86,12 @@ void Pokemon::setDefending(bool value) { defending = value; }
     return 1.0f;
 }
 
-int Pokemon::ataca(Pokemon* adversar) const {
-    const float factor = eficientaTip(tip, adversar->getTip());
-    int damage = static_cast<int>((attack - adversar->getDefense() / 2.0) * factor);
+int Pokemon::ataca(Pokemon& adversar) const {
+    const float factor = eficientaTip(tip, adversar.getTip());
+    int damage = static_cast<int>((attack - adversar.getDefense() / 2.0) * factor);
     if (damage < 0) damage = 0;
-    adversar->primesteDamage(damage);
-    std::cout << nume << " a atacat " << adversar->getNume() << " si a provocat " << damage << " damage!\n";
+    adversar.primesteDamage(damage);
+    std::cout << nume << " a atacat " << adversar.getNume() << " si a provocat " << damage << " damage!\n";
     if (factor > 1.0f)
         std::cout << "Este foarte eficient!\n";
     else if (factor < 1.0f)

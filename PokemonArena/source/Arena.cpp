@@ -4,16 +4,12 @@
 
 Arena::Arena() {
 
-    listaPokemoni.push_back(new Pokemon("Pikachu", "Electric", 1200, 55, 40, 90));
-    listaPokemoni.push_back(new Pokemon("Bulbasaur", "Iarba",   1400, 49, 49, 45));
-    listaPokemoni.push_back(new Pokemon("Charmander", "Foc",    1200, 52, 43, 65));
-    listaPokemoni.push_back(new Pokemon("Squirtle", "Apa",      1300, 48, 65, 43));
+    listaPokemoni.emplace_back("Pikachu", "Electric", 1200, 55, 40, 90);
+    listaPokemoni.emplace_back("Bulbasaur", "Iarba",   1400, 49, 49, 45);
+    listaPokemoni.emplace_back("Charmander", "Foc",    1200, 52, 43, 65);
+    listaPokemoni.emplace_back("Squirtle", "Apa",      1300, 48, 65, 43);
 }
 
-Arena::~Arena() {
-    for (auto p : listaPokemoni) delete p;
-
-}
 void Arena::afiseazaLeaderboard() {
     std::ifstream fin("leaderboard.txt");
     if (!fin.is_open()) {
@@ -70,10 +66,10 @@ void Arena::salveazaProgres(const Player& p1, const Player& p2){
         return;
     }
 
-    fout << p1.getNume() << " " << p1.getPokemon()->getNume() << " "
-         << p1.getPokemon()->getHP() << "\n";
-    fout << p2.getNume() << " " << p2.getPokemon()->getNume() << " "
-         << p2.getPokemon()->getHP() << "\n";
+    fout << p1.getNume() << " " << p1.getPokemon().getNume() << " "
+         << p1.getPokemon().getHP() << "\n";
+    fout << p2.getNume() << " " << p2.getPokemon().getNume() << " "
+         << p2.getPokemon().getHP() << "\n";
 
     fout.close();
 }
@@ -101,23 +97,29 @@ void Arena::startGame() const {
             Player p1(nume1);
             Player p2(nume2);
 
-            Pokemon* pk1 = nullptr;
-            Pokemon* pk2 = nullptr;
+            Pokemon pk1, pk2;
+            bool found1 = false, found2 = false;
 
-            for (auto* p : listaPokemoni) {
-                if (p->getNume() == poke1) pk1 = new Pokemon(*p);
-                if (p->getNume() == poke2) pk2 = new Pokemon(*p);
+            for (const auto& p : listaPokemoni) {
+                if (p.getNume() == poke1) {
+                    pk1 = p;
+                    found1 = true;
+                }
+                if (p.getNume() == poke2) {
+                    pk2 = p;
+                    found2 = true;
+                }
             }
 
-            if (pk1 && pk2) {
-                pk1->primesteDamage(pk1->getHP() - hp1);
-                pk2->primesteDamage(pk2->getHP() - hp2);
+            if (found1 && found2) {
+                pk1.primesteDamage(pk1.getHP() - hp1);
+                pk2.primesteDamage(pk2.getHP() - hp2);
 
                 p1.setPokemon(pk1);
                 p2.setPokemon(pk2);
 
                 std::cout << "\n=== Joc incarcat cu succes! ===\n";
-                std::cout << *pk1 << "\n" << *pk2 << "\n";
+                std::cout << pk1 << "\n" << pk2 << "\n";
 
                 desfasoaraLupta(p1, p2);
                 return;
@@ -149,8 +151,8 @@ void Arena::startGame() const {
         p1.alegePokemon(listaPokemoni, false);
         p2.alegePokemon(listaPokemoni, mod == 2);
 
-        const Pokemon* poke1 = p1.getPokemon();
-        const Pokemon* poke2 = p2.getPokemon();
+        const Pokemon* poke1 = &p1.getPokemon();
+        const Pokemon* poke2 = &p2.getPokemon();
 
         std::cout << "\n=== Lupta incepe! ===\n";
         std::cout << p1 << " vs " << p2 << "\n";
@@ -167,8 +169,8 @@ void Arena::startGame() const {
 }
 
 void Arena::desfasoaraLupta(Player& p1, Player& p2) {
-    const Pokemon* poke1 = p1.getPokemon();
-    const Pokemon* poke2 = p2.getPokemon();
+    Pokemon& poke1 = p1.getPokemon();
+    Pokemon& poke2 = p2.getPokemon();
 
     Player* first;
     Player* second;
@@ -176,9 +178,9 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
     std::mt19937 gen(std::random_device{}());
     std::uniform_int_distribution<> distrib(1, 3);
 
-    if (poke1->getSpeed() > poke2->getSpeed()) {
+    if (poke1.getSpeed() > poke2.getSpeed()) {
         first = &p1; second = &p2;
-    } else if (poke1->getSpeed() < poke2->getSpeed()) {
+    } else if (poke1.getSpeed() < poke2.getSpeed()) {
         first = &p2; second = &p1;
     } else {
         if (std::uniform_int_distribution<>(0, 1)(gen) == 0) { first = &p1; second = &p2; }
@@ -187,10 +189,10 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
 
     std::cout << first->getNume() << " va incepe primul!\n";
 
-    while (poke1->esteViu() && poke2->esteViu()) {
+    while (poke1.esteViu() && poke2.esteViu()) {
 
-        Pokemon* attacker = first->getPokemon();
-        Pokemon* defender = second->getPokemon();
+        Pokemon& attacker = first->getPokemon();
+        Pokemon& defender = second->getPokemon();
 
         std::cout << "\n" << first->getNume() << ", alege o actiune:\n";
         std::cout << "1. Atac normal\n";
@@ -205,22 +207,22 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
         }
 
         if (actiune == 1) {
-            attacker->ataca(defender);
+            attacker.ataca(defender);
         } else if (actiune == 2) {
-            attacker->setDefending(true);
-            std::cout << attacker->getNume() << " se apara!\n";
+            attacker.setDefending(true);
+            std::cout << attacker.getNume() << " se apara!\n";
         } else if (actiune == 3) {
-            attacker->folosesteAbilitate(defender);
+            attacker.folosesteAbilitate(defender);
         } else {
             std::cout << "Actiune invalida. Se considera atac normal.\n";
-            attacker->ataca(defender);
+            attacker.ataca(defender);
         }
 
 
-        if (attacker->esteViu() && defender->esteViu())
+        if (attacker.esteViu() && defender.esteViu())
         {
-        attacker = second->getPokemon();
-        defender = first->getPokemon();
+        Pokemon& attacker = second->getPokemon();
+        Pokemon& defender = first->getPokemon();
 
         std::cout << "\n" << second->getNume() << ", alege o actiune:\n";
         std::cout << "1. Atac normal\n";
@@ -235,30 +237,30 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
         }
 
         if (actiune == 1) {
-            attacker->ataca(defender);
+            attacker.ataca(defender);
         } else if (actiune == 2) {
-            attacker->setDefending(true);
-            std::cout << attacker->getNume() << " se apara!\n";
+            attacker.setDefending(true);
+            std::cout << attacker.getNume() << " se apara!\n";
         } else if (actiune == 3) {
-            attacker->folosesteAbilitate(defender);
+            attacker.folosesteAbilitate(defender);
         } else {
             std::cout << "Actiune invalida. Se considera atac normal.\n";
-            attacker->ataca(defender);
+            attacker.ataca(defender);
         }
         }
 
         std::cout << "\n=== Stare dupa runda ===\n";
-        std::cout << p1.getNume() << ": " << p1.getPokemon()->getHP() << " HP\n";
-        std::cout << p2.getNume() << ": " << p2.getPokemon()->getHP() << " HP\n";
+        std::cout << p1.getNume() << ": " << p1.getPokemon().getHP() << " HP\n";
+        std::cout << p2.getNume() << ": " << p2.getPokemon().getHP() << " HP\n";
 
-        p1.getPokemon()->reduceCooldown();
-        p2.getPokemon()->reduceCooldown();
+        p1.getPokemon().reduceCooldown();
+        p2.getPokemon().reduceCooldown();
 
         salveazaProgres(p1, p2);
 
     }
     std::string castigator;
-    if (poke1->esteViu()){
+    if (poke1.esteViu()){
         std::cout << p1.getNume() << " a castigat!\n";
         castigator = p1.getNume();
     }

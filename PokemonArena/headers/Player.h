@@ -8,19 +8,17 @@
 class Player {
 private:
     std::string nume;
-    Pokemon* pokemon;
+    Pokemon pokemon;
+    bool arePokemonAles = false;
 
 public:
     explicit Player(std::string nume = "Player");
-    ~Player();
 
-    Player(const Player& other);
-    Player& operator=(const Player& other);
+    void setPokemon(const Pokemon& pk);
 
-    void setPokemon(Pokemon* pokemon);
-
-    void alegePokemon(const std::vector<Pokemon*>& listaPokemoni, bool eAI = false);
-    [[nodiscard]] Pokemon* getPokemon() const;
+    void alegePokemon(const std::vector<Pokemon>& listaPokemoni, bool eAI = false);
+    [[nodiscard]] Pokemon& getPokemon();
+    [[nodiscard]] const Pokemon& getPokemon() const;
     [[nodiscard]] const std::string& getNume() const;
     friend std::ostream& operator<<(std::ostream& os, const Player& p);
 

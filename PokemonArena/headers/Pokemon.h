@@ -18,6 +18,7 @@ private:
 
 public:
     Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed);
+    Pokemon();
     ~Pokemon() = default;
     [[nodiscard]] const std::string& getNume() const;
     [[nodiscard]] const std::string& getTip() const;
@@ -29,11 +30,11 @@ public:
     void reseteazaAbilitatea();
     [[nodiscard]] bool poateFolosiiAbilitatea() const;
     void reduceCooldown();
-    int folosesteAbilitate(Pokemon* adversar);
+    int folosesteAbilitate(Pokemon& adversar);
 
     static float eficientaTip(const std::string& tipAtacant, const std::string& tipAdversar);
 
-    int ataca(Pokemon* adversar) const;
+    int ataca(Pokemon& adversar) const;
     void primesteDamage(int damage);
 
     void setDefending(bool value);
