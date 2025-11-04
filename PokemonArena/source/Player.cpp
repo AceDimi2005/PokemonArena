@@ -10,12 +10,9 @@ Player::~Player() {
         delete pokemon;
 }
 
-Player::Player(const Player& other) : nume(other.nume) {
-    if (other.pokemon)
-        pokemon = new Pokemon(*other.pokemon);
-    else
-        pokemon = nullptr;
-}
+Player::Player(const Player &other)
+    : nume(other.nume),
+      pokemon(other.pokemon ? new Pokemon(*other.pokemon) : nullptr) {}
 
 Player& Player::operator=(const Player& other) {
     if (this == &other)
