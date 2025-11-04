@@ -221,8 +221,8 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
 
         if (attacker.esteViu() && defender.esteViu())
         {
-        Pokemon& attacker = second->getPokemon();
-        Pokemon& defender = first->getPokemon();
+        Pokemon& attacker2 = second->getPokemon();
+        Pokemon& defender2 = first->getPokemon();
 
         std::cout << "\n" << second->getNume() << ", alege o actiune:\n";
         std::cout << "1. Atac normal\n";
@@ -237,15 +237,15 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
         }
 
         if (actiune == 1) {
-            attacker.ataca(defender);
+            attacker2.ataca(defender2);
         } else if (actiune == 2) {
-            attacker.setDefending(true);
-            std::cout << attacker.getNume() << " se apara!\n";
+            attacker2.setDefending(true);
+            std::cout << attacker2.getNume() << " se apara!\n";
         } else if (actiune == 3) {
-            attacker.folosesteAbilitate(defender);
+            attacker2.folosesteAbilitate(defender2);
         } else {
             std::cout << "Actiune invalida. Se considera atac normal.\n";
-            attacker.ataca(defender);
+            attacker2.ataca(defender2);
         }
         }
 
