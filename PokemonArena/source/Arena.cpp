@@ -151,13 +151,13 @@ void Arena::startGame() const {
         p1.alegePokemon(listaPokemoni, false);
         p2.alegePokemon(listaPokemoni, mod == 2);
 
-        const Pokemon* poke1 = &p1.getPokemon();
-        const Pokemon* poke2 = &p2.getPokemon();
+        const Pokemon poke1 = p1.getPokemon();
+        const Pokemon poke2 = p2.getPokemon();
 
         std::cout << "\n=== Lupta incepe! ===\n";
         std::cout << p1 << " vs " << p2 << "\n";
-        std::cout << *poke1 << "\n";
-        std::cout << *poke2 << "\n";
+        std::cout << poke1 << "\n";
+        std::cout << poke2 << "\n";
 
         desfasoaraLupta(p1, p2);
 
@@ -169,8 +169,8 @@ void Arena::startGame() const {
 }
 
 void Arena::desfasoaraLupta(Player& p1, Player& p2) {
-    Pokemon& poke1 = p1.getPokemon();
-    Pokemon& poke2 = p2.getPokemon();
+    const Pokemon& poke1 = p1.getPokemon();
+    const Pokemon& poke2 = p2.getPokemon();
 
     Player* first;
     Player* second;

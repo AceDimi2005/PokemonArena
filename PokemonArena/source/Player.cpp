@@ -7,7 +7,6 @@ Player::Player(std::string nume) : nume(std::move(nume)), pokemon("", "", 0, 0, 
 
 void Player::setPokemon(const Pokemon& pk) {
     pokemon = pk;
-    arePokemonAles = true;
 }
 
 void Player::alegePokemon(const std::vector<Pokemon>& listaPokemoni, bool eAI) {
@@ -30,7 +29,6 @@ void Player::alegePokemon(const std::vector<Pokemon>& listaPokemoni, bool eAI) {
         alegere--;
     }
     pokemon = listaPokemoni[alegere];
-    arePokemonAles = true;
 }
 
 Pokemon& Player::getPokemon() { return pokemon; }

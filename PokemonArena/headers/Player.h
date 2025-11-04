@@ -9,7 +9,6 @@ class Player {
 private:
     std::string nume;
     Pokemon pokemon;
-    bool arePokemonAles = false;
 
 public:
     explicit Player(std::string nume = "Player");
