@@ -65,8 +65,8 @@ int Pokemon::folosesteAbilitate(Pokemon& adversar) {
     return damage;
 }
 
-const std::string& Pokemon::getNume() const { return nume; }
-const std::string& Pokemon::getTip() const { return tip; }
+std::string Pokemon::getNume() const { return nume; }
+std::string Pokemon::getTip() const { return tip; }
 int Pokemon::getHP() const { return hp; }
 int Pokemon::getDefense() const { return defense; }
 int Pokemon::getSpeed() const { return speed; }
