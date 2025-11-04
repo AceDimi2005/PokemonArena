@@ -20,8 +20,8 @@ public:
     Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed);
     Pokemon();
     ~Pokemon() = default;
-    [[nodiscard]] std::string getNume() const;
-    [[nodiscard]] std::string getTip() const;
+    [[nodiscard]] std::string getNume();
+    [[nodiscard]] std::string getTip();
     [[nodiscard]] int getHP() const;
     [[nodiscard]] int getDefense() const;
     [[nodiscard]] int getSpeed() const;
