@@ -2,9 +2,9 @@
 #include <iostream>
 #include <utility>
 
-Pokemon::Pokemon() : cooldown(0), cooldownMax(0), nume(""), tip(""), hp(0), attack(0), defense(0), speed(0), defending(false) {}
+Pokemon::Pokemon() : cooldown(0), cooldownMax(0), defending(false), nume(""), tip(""), hp(0), attack(0), defense(0), speed(0) {}
 Pokemon::Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed)
-    : nume(std::move(nume)), tip(std::move(tip)), hp(hp), attack(attack), defense(defense), speed(speed), defending(false) {
+    : cooldown(0), cooldownMax(0), defending(false), nume(std::move(nume)), tip(std::move(tip)), hp(hp), attack(attack), defense(defense), speed(speed) {
     if (this->tip == "Foc") cooldownMax = 3;
     else if (this->tip == "Apa") cooldownMax = 2;
     else if (this->tip == "Iarba") cooldownMax = 2;
