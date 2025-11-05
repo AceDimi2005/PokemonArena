@@ -14,9 +14,9 @@ Pokemon::Pokemon(std::string nume, std::string tip, int hp, int attack, int defe
 }
 
 Pokemon::Pokemon(const Pokemon& other)
-    : nume(other.nume), tip(other.tip), hp(other.hp), attack(other.attack),
-      defense(other.defense), speed(other.speed), defending(other.defending),
-      cooldown(other.cooldown), cooldownMax(other.cooldownMax) {}
+    : cooldown(other.cooldown), cooldownMax(other.cooldownMax), defending(other.defending),
+      nume(other.nume), tip(other.tip), hp(other.hp), attack(other.attack),
+      defense(other.defense), speed(other.speed) {}
 
 Pokemon& Pokemon::operator=(const Pokemon& other) {
     if (this != &other) {

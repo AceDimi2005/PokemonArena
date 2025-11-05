@@ -8,13 +8,13 @@ class Pokemon {
 private:
     int cooldown;
     int cooldownMax;
+    bool defending;
     std::string nume;
     std::string tip;
     int hp;
     int attack;
     int defense;
     int speed;
-    bool defending;
 
 public:
     Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed);
