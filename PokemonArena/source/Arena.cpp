@@ -273,7 +273,7 @@ std::ostream& operator<<(std::ostream& out, const Arena& a) {
     out << "Numar total de pokemoni disponibili: " << a.listaPokemoni.size() << "\n";
     out << "Lista pokemoni:\n";
     for (const auto& p : a.listaPokemoni) {
-        out << p << ")\n";
+         out << p << ")\n";
     }
     out << "=========================\n";
     return out;
