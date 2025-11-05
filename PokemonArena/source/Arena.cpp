@@ -152,8 +152,7 @@ void Arena::startGame() const {
         p2.alegePokemon(listaPokemoni, mod == 2);
 
         std::cout << "\n=== Lupta incepe! ===\n";
-        std::cout << p1 << "\n";
-        std::cout << p2 << "\n";
+        std::cout << p1 << "\n" << p2 << "\n";
 
         desfasoaraLupta(p1, p2);
 
@@ -246,8 +245,7 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
         }
 
         std::cout << "\n=== Stare dupa runda ===\n";
-        std::cout << p1.getNume() << ": " << p1.getPokemon().getHP() << " HP\n";
-        std::cout << p2.getNume() << ": " << p2.getPokemon().getHP() << " HP\n";
+        std::cout << p1.getNume() << ": " << p1.getPokemon().getHP() << " HP\n"<< p2.getNume() << ": " << p2.getPokemon().getHP() << " HP\n";
 
         p1.getPokemon().reduceCooldown();
         p2.getPokemon().reduceCooldown();
