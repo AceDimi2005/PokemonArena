@@ -35,7 +35,9 @@ Pokemon& Player::getPokemon() { return pokemon; }
 const Pokemon& Player::getPokemon() const { return pokemon; }
 const std::string& Player::getNume() const { return nume; }
 
-std::ostream& operator<<(std::ostream& os, const Player& p) {
-    os << p.getNume();
-    return os;
+std::ostream& operator<<(std::ostream& out, const Player& p) {
+    out << "Jucator: " << p.getNume();
+    out << "\nPokemon: " << p.getPokemon().getNume()
+        << " (" << p.getPokemon().getTip() << ")";
+    return out;
 }

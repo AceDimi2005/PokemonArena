@@ -13,6 +13,30 @@ Pokemon::Pokemon(std::string nume, std::string tip, int hp, int attack, int defe
     cooldown = 0;
 }
 
+Pokemon::Pokemon(const Pokemon& other)
+    : nume(other.nume), tip(other.tip), hp(other.hp), attack(other.attack),
+      defense(other.defense), speed(other.speed), defending(other.defending),
+      cooldown(other.cooldown), cooldownMax(other.cooldownMax) {}
+
+Pokemon& Pokemon::operator=(const Pokemon& other) {
+    if (this != &other) {
+        nume = other.nume;
+        tip = other.tip;
+        hp = other.hp;
+        attack = other.attack;
+        defense = other.defense;
+        speed = other.speed;
+        defending = other.defending;
+        cooldown = other.cooldown;
+        cooldownMax = other.cooldownMax;
+    }
+    return *this;
+}
+
+Pokemon::~Pokemon() {
+
+}
+
 void Pokemon::reseteazaAbilitatea() {
     cooldown = cooldownMax;
 }
@@ -109,9 +133,12 @@ void Pokemon::primesteDamage(int damage) {
     if (hp < 0) hp = 0;
 }
 
-std::ostream& operator<<(std::ostream& os, const Pokemon& p) {
-    os << p.nume << " (" << p.tip << ") | HP: " << p.hp
-       << " | Atk: " << p.attack << " | Def: " << p.defense
-       << " | Spd: " << p.speed;
-    return os;
+std::ostream& operator<<(std::ostream& out, const Pokemon& p) {
+    out << "Pokemon: " << p.nume << " (" << p.tip << ")\n"
+        << "HP: " << p.hp
+        << " | Atk: " << p.attack
+        << " | Def: " << p.defense
+        << " | Spd: " << p.speed
+        << " | Cooldown: " << p.cooldown << "/" << p.cooldownMax;
+    return out;
 }

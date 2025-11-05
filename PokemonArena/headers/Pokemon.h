@@ -19,7 +19,9 @@ private:
 public:
     Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed);
     Pokemon();
-    ~Pokemon() = default;
+    Pokemon(const Pokemon& other);
+    Pokemon& operator=(const Pokemon& other);
+    ~Pokemon();
     [[nodiscard]] const std::string& getNume() const;
     [[nodiscard]] const std::string& getTip() const;
     [[nodiscard]] int getHP() const;
