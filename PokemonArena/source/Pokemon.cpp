@@ -1,41 +1,98 @@
 #include "../headers/Pokemon.h"
+#include "../headers/Ability.h"
+
 #include <iostream>
 #include <utility>
+#include <memory>
 
-Pokemon::Pokemon() : cooldown(0), cooldownMax(0), defending(false), nume(""), tip(""), hp(0), attack(0), defense(0), speed(0) {}
+#include "../headers/FireAbility.h"
+#include "../headers/WaterAbility.h"
+#include "../headers/ElectricAbility.h"
+#include "../headers/GrassAbility.h"
+#include "../headers/GameException.h"
+
+static std::unique_ptr<Ability> createAbilityByType(const std::string& tip) {
+    if (tip == "Foc")
+        return std::make_unique<FireAbility>(20);
+    if (tip == "Apa")
+        return std::make_unique<WaterAbility>(2);
+    if (tip == "Electric")
+        return std::make_unique<ElectricAbility>(15);
+    if (tip == "Iarba")
+        return std::make_unique<GrassAbility>(18);
+    return nullptr;
+}
+
+void Pokemon::valideaza() const {
+    if (hp <= 0 || attack < 0 || defense < 0 || speed < 0)
+        throw InvalidPokemonException();
+
+    if (!abilitate)
+        throw AbilityException();
+}
+
+Pokemon::Pokemon()
+    : cooldown(0), cooldownMax(0), defending(false),
+      nume(""), tip(""), hp(0), attack(0), defense(0), speed(0),
+      abilitate(nullptr) {}
+
 Pokemon::Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed)
-    : cooldown(0), cooldownMax(0), defending(false), nume(std::move(nume)), tip(std::move(tip)), hp(hp), attack(attack), defense(defense), speed(speed) {
+    : cooldown(0), cooldownMax(0), defending(false),
+      nume(std::move(nume)), tip(std::move(tip)),
+      hp(hp), attack(attack), defense(defense), speed(speed),
+      abilitate(createAbilityByType(this->tip)) {
+
+
     if (this->tip == "Foc") cooldownMax = 3;
     else if (this->tip == "Apa") cooldownMax = 2;
     else if (this->tip == "Iarba") cooldownMax = 2;
     else if (this->tip == "Electric") cooldownMax = 3;
     else cooldownMax = 2;
+
+    cooldown = 0;
+}
+
+Pokemon::Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed, const Ability& ability)
+    : cooldown(0), cooldownMax(0), defending(false),
+      nume(std::move(nume)), tip(std::move(tip)),
+      hp(hp), attack(attack), defense(defense), speed(speed),
+      abilitate(ability.clone()) {
+
+    if (this->tip == "Foc") cooldownMax = 3;
+    else if (this->tip == "Apa") cooldownMax = 2;
+    else if (this->tip == "Iarba") cooldownMax = 2;
+    else if (this->tip == "Electric") cooldownMax = 3;
+    else cooldownMax = 2;
+
     cooldown = 0;
 }
 
 Pokemon::Pokemon(const Pokemon& other)
     : cooldown(other.cooldown), cooldownMax(other.cooldownMax), defending(other.defending),
       nume(other.nume), tip(other.tip), hp(other.hp), attack(other.attack),
-      defense(other.defense), speed(other.speed) {}
+      defense(other.defense), speed(other.speed),
+      abilitate(other.abilitate ? other.abilitate->clone() : nullptr) {}
 
-Pokemon& Pokemon::operator=(const Pokemon& other) {
-    if (this != &other) {
-        nume = other.nume;
-        tip = other.tip;
-        hp = other.hp;
-        attack = other.attack;
-        defense = other.defense;
-        speed = other.speed;
-        defending = other.defending;
-        cooldown = other.cooldown;
-        cooldownMax = other.cooldownMax;
-    }
+Pokemon& Pokemon::operator=(Pokemon other) {
+    swap(*this, other);
     return *this;
 }
 
-Pokemon::~Pokemon() {
-
+void swap(Pokemon& a, Pokemon& b) noexcept {
+    using std::swap;
+    swap(a.cooldown, b.cooldown);
+    swap(a.cooldownMax, b.cooldownMax);
+    swap(a.defending, b.defending);
+    swap(a.nume, b.nume);
+    swap(a.tip, b.tip);
+    swap(a.hp, b.hp);
+    swap(a.attack, b.attack);
+    swap(a.defense, b.defense);
+    swap(a.speed, b.speed);
+    swap(a.abilitate, b.abilitate);
 }
+
+Pokemon::~Pokemon() = default;
 
 void Pokemon::reseteazaAbilitatea() {
     cooldown = cooldownMax;
@@ -56,35 +113,28 @@ int Pokemon::folosesteAbilitate(Pokemon& adversar) {
         return 0;
     }
 
-    float factor = eficientaTip(tip, adversar.getTip());
-    float power = 1.5f;
+    if (!abilitate)
+        throw AbilityException();
 
-    if (tip == "Foc") {
-        std::cout << nume << " foloseste Flamethrower!\n";
-        power = 2.0f;
-    } else if (tip == "Apa") {
-        std::cout << nume << " foloseste Water Pulse!\n";
-        power = 1.6f;
-    } else if (tip == "Iarba") {
-        std::cout << nume << " foloseste Vine Whip!\n";
-        power = 1.5f;
-    } else if (tip == "Electric") {
-        std::cout << nume << " foloseste Thunderbolt!\n";
-        power = 1.8f;
+    if (auto* electric = dynamic_cast<ElectricAbility*>(abilitate.get())) {
+        electric->overcharge();
+        std::cout << nume << " isi incarca electricitatea!\n";
     }
 
-    int damage = static_cast<int>((attack * power - adversar.getDefense() / 3.0) * factor);
+    abilitate->print();
+
+    int damage = abilitate->use(
+    attack,
+    adversar.getDefense(),
+    adversar.getTip()
+);
     if (damage < 0) damage = 0;
 
     adversar.primesteDamage(damage);
     std::cout << nume << " a folosit abilitatea speciala si a provocat "
-          << damage << " damage adversarului!\n";
-    reseteazaAbilitatea();
+              << damage << " damage adversarului!\n";
 
-    if (factor > 1.0f)
-        std::cout << "Este super eficient!\n";
-    else if (factor < 1.0f)
-        std::cout << "Nu e prea eficient...\n";
+    reseteazaAbilitatea();
 
     return damage;
 }
@@ -98,7 +148,7 @@ bool Pokemon::esteViu() const { return hp > 0; }
 
 void Pokemon::setDefending(bool value) { defending = value; }
 
-    float Pokemon::eficientaTip(const std::string& tipAtacant, const std::string& tipAdversar) {
+float Pokemon::eficientaTip(const std::string& tipAtacant, const std::string& tipAdversar) {
     if (tipAtacant == "Foc" && tipAdversar == "Iarba") return 2.0f;
     if (tipAtacant == "Foc" && tipAdversar == "Apa") return 0.5f;
     if (tipAtacant == "Apa" && tipAdversar == "Foc") return 2.0f;
@@ -114,12 +164,15 @@ int Pokemon::ataca(Pokemon& adversar) const {
     const float factor = eficientaTip(tip, adversar.getTip());
     int damage = static_cast<int>((attack - adversar.getDefense() / 2.0) * factor);
     if (damage < 0) damage = 0;
+
     adversar.primesteDamage(damage);
     std::cout << nume << " a atacat " << adversar.getNume() << " si a provocat " << damage << " damage!\n";
+
     if (factor > 1.0f)
         std::cout << "Este foarte eficient!\n";
     else if (factor < 1.0f)
         std::cout << "Nu este prea eficient...\n";
+
     return damage;
 }
 
@@ -129,6 +182,7 @@ void Pokemon::primesteDamage(int damage) {
         std::cout << nume << " s-a aparat si a redus damage-ul la " << damage << "!\n";
         defending = false;
     }
+
     hp -= damage;
     if (hp < 0) hp = 0;
 }

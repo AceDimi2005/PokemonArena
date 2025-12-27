@@ -1,4 +1,5 @@
 #include "../headers/Arena.h"
+#include "../headers/GameException.h"
 #include <random>
 #include <fstream>
 
@@ -150,6 +151,14 @@ void Arena::startGame() const {
 
         p1.alegePokemon(listaPokemoni, false);
         p2.alegePokemon(listaPokemoni, mod == 2);
+
+        try {
+            p1.getPokemon().valideaza();
+            p2.getPokemon().valideaza();
+        } catch (const GameException& e) {
+            std::cout << "Eroare joc: " << e.what() << "\n";
+            return;
+        }
 
         std::cout << "\n=== Lupta incepe! ===\n";
         std::cout << p1 << "\n" << p2 << "\n";

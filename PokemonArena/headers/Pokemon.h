@@ -3,6 +3,9 @@
 
 #include <iostream>
 #include <string>
+#include <memory>
+
+class Ability;
 
 class Pokemon {
 private:
@@ -15,12 +18,14 @@ private:
     int attack;
     int defense;
     int speed;
+    std::unique_ptr<Ability> abilitate; // pointer la clasa de baza (Ability)
 
 public:
     Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed);
+    Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed, const Ability& ability);
     Pokemon();
     Pokemon(const Pokemon& other);
-    Pokemon& operator=(const Pokemon& other);
+    Pokemon& operator=(Pokemon other);
     ~Pokemon();
     [[nodiscard]] const std::string& getNume() const;
     [[nodiscard]] const std::string& getTip() const;
@@ -28,6 +33,8 @@ public:
     [[nodiscard]] int getDefense() const;
     [[nodiscard]] int getSpeed() const;
     [[nodiscard]] bool esteViu() const;
+
+    void valideaza() const;
 
     void reseteazaAbilitatea();
     [[nodiscard]] bool poateFolosiiAbilitatea() const;
@@ -42,6 +49,7 @@ public:
     void setDefending(bool value);
 
     friend std::ostream& operator<<(std::ostream& os, const Pokemon& p);
+    friend void swap(Pokemon& a, Pokemon& b) noexcept;
 
 };
 

@@ -53,6 +53,17 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         PokemonArena/source/main.cpp
         PokemonArena/source/Player.cpp
         PokemonArena/source/Pokemon.cpp
+        PokemonArena/headers/Ability.h
+        PokemonArena/headers/FireAbility.h
+        PokemonArena/headers/WaterAbility.h
+        PokemonArena/headers/ElectricAbility.h
+        PokemonArena/source/Ability.cpp
+        PokemonArena/source/FireAbility.cpp
+        PokemonArena/source/WaterAbility.cpp
+        PokemonArena/source/ElectricAbility.cpp
+        PokemonArena/headers/GrassAbility.h
+        PokemonArena/source/GrassAbility.cpp
+        PokemonArena/headers/GameException.h
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
