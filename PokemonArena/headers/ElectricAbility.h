@@ -1,14 +1,7 @@
-//
-// Created by Dimitrie Pirvanescu on 20.12.2025.
-//
 
-//#ifndef OOP_ELECTRICABILITY_H
-//#define OOP_ELECTRICABILITY_H
-
-//#endif //OOP_ELECTRICABILITY_H
 #include "Ability.h"
 class ElectricAbility : public Ability {
-    int bonus;   // 🔥 același nume ca în cpp
+    int bonus;
 
 public:
     explicit ElectricAbility(int bonus);
