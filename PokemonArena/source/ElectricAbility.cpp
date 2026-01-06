@@ -3,12 +3,6 @@
 #include "../headers/Pokemon.h"
 #include <iostream>
 
-static float eficientaTip(const std::string& atacant, const std::string& adversar) {
-    if (atacant == "Electric" && adversar == "Apa") return 2.0f;
-    if (atacant == "Electric" && adversar == "Iarba") return 0.5f;
-    return 1.0f;
-}
-
 float ElectricAbility::getEfficiency(const std::string& adversarTip) const {
     if (adversarTip == "Apa") return 2.0f;
     if (adversarTip == "Iarba") return 0.5f;

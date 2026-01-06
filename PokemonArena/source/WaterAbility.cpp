@@ -2,11 +2,6 @@
 #include "../headers/Pokemon.h"
 #include <iostream>
 
-static float eficientaTip(const std::string& atacant, const std::string& adversar) {
-    if (atacant == "Apa" && adversar == "Foc") return 2.0f;
-    if (atacant == "Apa" && adversar == "Iarba") return 0.5f;
-    return 1.0f;
-}
 
 WaterAbility::WaterAbility(int m)
     : multiplier(m) {}

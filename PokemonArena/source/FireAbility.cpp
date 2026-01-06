@@ -1,11 +1,6 @@
 #include "../headers/FireAbility.h"
 #include "../headers/Pokemon.h"
 
-static float eficientaTip(const std::string& atacant, const std::string& adversar) {
-    if (atacant == "Foc" && adversar == "Iarba") return 2.0f;
-    if (atacant == "Foc" && adversar == "Apa") return 0.5f;
-    return 1.0f;
-}
 
 FireAbility::FireAbility(int power)
     : Ability(), power(power) {}

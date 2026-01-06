@@ -2,12 +2,6 @@
 #include "../headers/Pokemon.h"
 #include <iostream>
 
-static float eficientaTip(const std::string& atacant,
-                          const std::string& adversar) {
-    if (atacant == "Iarba" && adversar == "Apa") return 2.0f;
-    if (atacant == "Iarba" && adversar == "Foc") return 0.5f;
-    return 1.0f;
-}
 
 float GrassAbility::getEfficiency(const std::string& adversarTip) const {
     if (adversarTip == "Apa") return 2.0f;
