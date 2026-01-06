@@ -47,22 +47,7 @@ include(FetchContent)
 
 # external dependencies: ncurses (find_package + fallback FetchContent)
 
-find_package(Curses)
 
-if (NOT CURSES_FOUND)
-    message(STATUS "ncurses not found, fetching via FetchContent")
-
-    FetchContent_Declare(
-        ncurses
-        GIT_REPOSITORY https://github.com/mirror/ncurses.git
-        GIT_TAG v6.4
-    )
-
-    FetchContent_MakeAvailable(ncurses)
-
-    set(CURSES_LIBRARIES ncurses form)
-    set(CURSES_INCLUDE_DIR ${ncurses_SOURCE_DIR}/include)
-endif()
 
 ###############################################################################
 
