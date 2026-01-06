@@ -12,6 +12,8 @@ public:
 
     virtual Ability* clone() const = 0;
 
+    virtual int getCooldown() const = 0;
+
     void print() const {
         printImpl();
     }

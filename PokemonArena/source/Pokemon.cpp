@@ -29,15 +29,16 @@ Pokemon::Pokemon(std::string nume, std::string tip, int hp, int attack, int defe
     : cooldown(0), cooldownMax(0), defending(false),
       nume(std::move(nume)), tip(std::move(tip)),
       hp(hp), maxHp(hp), attack(attack), defense(defense), speed(speed),
-      // ADAPTARE: Folosim Factory-ul aici
+
       abilitate(AbilityFactory::create(this->tip)) {
 
-    if (this->tip == "Foc") cooldownMax = 3;
-    else if (this->tip == "Apa") cooldownMax = 2;
-    else if (this->tip == "Iarba") cooldownMax = 2;
-    else if (this->tip == "Electric") cooldownMax = 3;
-    else cooldownMax = 2;
+    if (abilitate) {
+        cooldownMax = abilitate->getCooldown();
+    } else {
+        cooldownMax = 0;
+    }
 
+    cooldown = 0;
     cooldown = 0;
 }
 
