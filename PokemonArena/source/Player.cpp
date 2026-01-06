@@ -3,8 +3,7 @@
 #include <utility>
 #include <random>
 
-Player::Player(std::string nume) : nume(std::move(nume)), pokemon("", "", 0, 0, 0, 0) {}
-
+Player::Player(std::string nume) : nume(std::move(nume)), pokemon() {}
 void Player::setPokemon(const Pokemon& pk) {
     pokemon = pk;
 }

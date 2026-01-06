@@ -83,6 +83,8 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         PokemonArena/headers/GrassAbility.h
         PokemonArena/source/GrassAbility.cpp
         PokemonArena/headers/GameException.h
+        PokemonArena/source/AbilityFactory.cpp
+        PokemonArena/headers/AbilityFactory.h
 )
 
 target_include_directories(${MAIN_EXECUTABLE_NAME} PRIVATE ${CURSES_INCLUDE_DIR})

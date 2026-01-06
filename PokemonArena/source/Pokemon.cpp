@@ -1,5 +1,6 @@
 #include "../headers/Pokemon.h"
 #include "../headers/Ability.h"
+#include "../headers/AbilityFactory.h"
 
 #include <iostream>
 #include <utility>
@@ -11,17 +12,6 @@
 #include "../headers/GrassAbility.h"
 #include "../headers/GameException.h"
 
-static std::unique_ptr<Ability> createAbilityByType(const std::string& tip) {
-    if (tip == "Foc")
-        return std::make_unique<FireAbility>(20);
-    if (tip == "Apa")
-        return std::make_unique<WaterAbility>(2);
-    if (tip == "Electric")
-        return std::make_unique<ElectricAbility>(15);
-    if (tip == "Iarba")
-        return std::make_unique<GrassAbility>(18);
-    return nullptr;
-}
 
 void Pokemon::valideaza() const {
     if (hp <= 0 || attack < 0 || defense < 0 || speed < 0)
@@ -33,30 +23,15 @@ void Pokemon::valideaza() const {
 
 Pokemon::Pokemon()
     : cooldown(0), cooldownMax(0), defending(false),
-      nume(""), tip(""), hp(0), maxHp(0), attack(0), defense(0), speed(0),
+      nume(""), tip(""), hp(0), attack(0), defense(0), speed(0),
       abilitate(nullptr) {}
 
 Pokemon::Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed)
     : cooldown(0), cooldownMax(0), defending(false),
       nume(std::move(nume)), tip(std::move(tip)),
-      hp(hp), maxHp(hp), attack(attack), defense(defense), speed(speed),
-      abilitate(createAbilityByType(this->tip)) {
-
-
-    if (this->tip == "Foc") cooldownMax = 3;
-    else if (this->tip == "Apa") cooldownMax = 2;
-    else if (this->tip == "Iarba") cooldownMax = 2;
-    else if (this->tip == "Electric") cooldownMax = 3;
-    else cooldownMax = 2;
-
-    cooldown = 0;
-}
-
-Pokemon::Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed, const Ability& ability)
-    : cooldown(0), cooldownMax(0), defending(false),
-      nume(std::move(nume)), tip(std::move(tip)),
-      hp(hp), maxHp(hp), attack(attack), defense(defense), speed(speed),
-      abilitate(ability.clone()) {
+      hp(hp), attack(attack), defense(defense), speed(speed),
+      // ADAPTARE: Folosim Factory-ul aici
+      abilitate(AbilityFactory::create(this->tip)) {
 
     if (this->tip == "Foc") cooldownMax = 3;
     else if (this->tip == "Apa") cooldownMax = 2;
@@ -69,7 +44,7 @@ Pokemon::Pokemon(std::string nume, std::string tip, int hp, int attack, int defe
 
 Pokemon::Pokemon(const Pokemon& other)
     : cooldown(other.cooldown), cooldownMax(other.cooldownMax), defending(other.defending),
-      nume(other.nume), tip(other.tip), hp(other.hp), maxHp(other.maxHp), attack(other.attack),
+      nume(other.nume), tip(other.tip), hp(other.hp), attack(other.attack),
       defense(other.defense), speed(other.speed),
       abilitate(other.abilitate ? other.abilitate->clone() : nullptr) {}
 
@@ -86,7 +61,6 @@ void swap(Pokemon& a, Pokemon& b) noexcept {
     swap(a.nume, b.nume);
     swap(a.tip, b.tip);
     swap(a.hp, b.hp);
-    swap(a.maxHp, b.maxHp);
     swap(a.attack, b.attack);
     swap(a.defense, b.defense);
     swap(a.speed, b.speed);
@@ -143,7 +117,6 @@ int Pokemon::folosesteAbilitate(Pokemon& adversar) {
 const std::string& Pokemon::getNume() const { return nume; }
 const std::string& Pokemon::getTip() const { return tip; }
 int Pokemon::getHP() const { return hp; }
-int Pokemon::getMaxHP() const { return maxHp; }
 int Pokemon::getDefense() const { return defense; }
 int Pokemon::getSpeed() const { return speed; }
 bool Pokemon::esteViu() const { return hp > 0; }
