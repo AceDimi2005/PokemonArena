@@ -12,6 +12,13 @@
 #include "../headers/GrassAbility.h"
 #include "../headers/GameException.h"
 
+void Pokemon::heal(int amount) {
+    hp += amount;
+    if (hp > maxHp) {
+        hp = maxHp;
+    }
+    std::cout << nume << " s-a vindecat cu " << amount << " HP!\n";
+}
 void Pokemon::valideaza() const {
     if (hp <= 0 || attack < 0 || defense < 0 || speed < 0)
         throw InvalidPokemonException();
@@ -78,11 +85,10 @@ bool Pokemon::poateFolosiiAbilitatea() const {
     return cooldown == 0;
 }
 
-/*void Pokemon::reduceCooldown() {
+void Pokemon::reduceCooldown() {
     if (cooldown > 0)
         cooldown--;
 }
-*/
 
 int Pokemon::folosesteAbilitate(Pokemon& adversar) {
     if (!poateFolosiiAbilitatea()) {
@@ -100,20 +106,10 @@ int Pokemon::folosesteAbilitate(Pokemon& adversar) {
 
     abilitate->print();
 
-    int damage = abilitate->use(
-    attack,
-    adversar.getDefense(),
-    adversar.getTip()
-);
-    if (damage < 0) damage = 0;
-
-    adversar.primesteDamage(damage);
-    std::cout << nume << " a folosit abilitatea speciala si a provocat "
-              << damage << " damage adversarului!\n";
-
+    abilitate->execute(*this, adversar);;
     reseteazaAbilitatea();
+    return 0;
 
-    return damage;
 }
 
 const std::string& Pokemon::getNume() const { return nume; }
@@ -124,7 +120,9 @@ int Pokemon::getSpeed() const { return speed; }
 bool Pokemon::esteViu() const { return hp > 0; }
 
 void Pokemon::setDefending(bool value) { defending = value; }
-
+int Pokemon::getAttack() const {
+    return attack;
+}
 float Pokemon::eficientaTip(const std::string& tipAtacant, const std::string& tipAdversar) {
     if (tipAtacant == "Foc" && tipAdversar == "Iarba") return 2.0f;
     if (tipAtacant == "Foc" && tipAdversar == "Apa") return 0.5f;

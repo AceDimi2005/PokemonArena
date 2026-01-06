@@ -1,4 +1,6 @@
 #include "../headers/ElectricAbility.h"
+#include <cstdlib>
+#include "../headers/Pokemon.h"
 #include <iostream>
 
 static float eficientaTip(const std::string& atacant, const std::string& adversar) {
@@ -7,13 +9,23 @@ static float eficientaTip(const std::string& atacant, const std::string& adversa
     return 1.0f;
 }
 
+float ElectricAbility::getEfficiency(const std::string& adversarTip) const {
+    if (adversarTip == "Apa") return 2.0f;
+    if (adversarTip == "Iarba") return 0.5f;
+    return 1.0f;
+}
+
 ElectricAbility::ElectricAbility(int bonus)
     : bonus(bonus) {}
 
-int ElectricAbility::use(int atk, int /*def*/, const std::string& adversarTip) const {
+/*int ElectricAbility::use(int atk, int /*def, const std::string& adversarTip) const {
     float factor = eficientaTip("Electric", adversarTip);
     return static_cast<int>((atk + bonus) * factor);
 }
+
+Ability* ElectricAbility::clone() const {
+    return new ElectricAbility(*this);
+}*/
 
 Ability* ElectricAbility::clone() const {
     return new ElectricAbility(*this);
@@ -25,4 +37,23 @@ void ElectricAbility::printImpl() const {
 
 void ElectricAbility::overcharge() {
     bonus += 10;
+}
+void ElectricAbility::execute(Pokemon& atacator, Pokemon& aparator) const {
+    float factor = getEfficiency(aparator.getTip());
+
+
+    int ignoredDefense = aparator.getDefense() / 5;
+    int baseDamage = (atacator.getAttack() + bonus) - (aparator.getDefense() - ignoredDefense);
+
+    int damage = static_cast<int>(baseDamage * factor);
+    if (damage < 0) damage = 0;
+
+    aparator.primesteDamage(damage);
+
+
+    int chance = std::rand() % 100;
+    if (chance < 25) {
+        aparator.setStunned(true);
+        std::cout << "ZZZT! " << aparator.getNume() << " a fost PARALIZAT de socul electric!\n";
+    }
 }

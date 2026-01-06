@@ -464,6 +464,9 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
         p1.getPokemon().reduceCooldown();
         p2.getPokemon().reduceCooldown();
 */
+
+        p1.getPokemon().reduceCooldown();
+        p2.getPokemon().reduceCooldown();
         salveazaProgres(p1, p2);
 
     }

@@ -20,6 +20,8 @@ private:
     int defense;
     int speed;
     std::unique_ptr<Ability> abilitate;
+    bool stunned = false;
+    int defenseBoost = 0;
 
 public:
     Pokemon(std::string nume, std::string tip, int hp, int attack, int defense, int speed);
@@ -28,18 +30,23 @@ public:
     Pokemon(const Pokemon& other);
     Pokemon& operator=(Pokemon other);
     ~Pokemon();
+    void heal(int amount);
+    void modifyDefense(int amount);
+    void modifyAttack(int amount) { attack += amount; }
+
+    void setStunned(bool val) { stunned = val; }
+    bool isStunned() const { return stunned; }
     [[nodiscard]] const std::string& getNume() const;
     [[nodiscard]] const std::string& getTip() const;
     [[nodiscard]] int getHP() const;
     [[nodiscard]] int getDefense() const;
     [[nodiscard]] int getSpeed() const;
     [[nodiscard]] bool esteViu() const;
-
     void valideaza() const;
-
+    [[nodiscard]] int getAttack() const;
     void reseteazaAbilitatea();
     [[nodiscard]] bool poateFolosiiAbilitatea() const;
-    //void reduceCooldown();
+    void reduceCooldown();
     int folosesteAbilitate(Pokemon& adversar);
 
     static float eficientaTip(const std::string& tipAtacant, const std::string& tipAdversar);

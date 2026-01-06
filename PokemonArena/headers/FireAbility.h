@@ -9,8 +9,11 @@ class FireAbility : public Ability {
 public:
     explicit FireAbility(int power);
 
-    int use(int atk, int def,
-        const std::string& adversarTip) const override;
+    /*int use(int atk, int def,
+        const std::string& adversarTip) const override;*/
+    void execute(Pokemon& atacator, Pokemon& aparator) const override;
+    float getEfficiency(const std::string& adversarTip) const override;
+
     Ability* clone() const override;
     int getCooldown() const override { return 3; }
 protected:
