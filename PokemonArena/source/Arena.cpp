@@ -5,11 +5,11 @@
 #include "../headers/GameException.h"
 #include <random>
 #include <fstream>
-#include <ncurses.h>
+//#include <ncurses.h>
 #include <vector>
 #include <string>
 
-static void drawHPBar(int y, int x, int hp, int maxHp) {
+/*static void drawHPBar(int y, int x, int hp, int maxHp) {
     if (maxHp <= 0) return;
 
     int width = 20;
@@ -30,6 +30,7 @@ static void drawHPBar(int y, int x, int hp, int maxHp) {
 
     mvprintw(y, x + width + 4, "%d/%d", hp, maxHp);
 }
+*/
 
 /*static const std::vector<std::string> ASCII_PIKACHU = {
     "  \\__/\\",
@@ -319,7 +320,7 @@ void Arena::startGame() const {
 
 void Arena::desfasoaraLupta(Player& p1, Player& p2) {
     setlocale(LC_ALL, "");
-    initscr();
+    /*initscr();
     noecho();
     cbreak();
     keypad(stdscr, TRUE);
@@ -328,7 +329,7 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
     init_pair(1, COLOR_GREEN, COLOR_BLACK);
     init_pair(2, COLOR_YELLOW, COLOR_BLACK);
     init_pair(3, COLOR_RED, COLOR_BLACK);
-
+*/
     const Pokemon& poke1 = p1.getPokemon();
     const Pokemon& poke2 = p2.getPokemon();
 
@@ -409,7 +410,7 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
         }
         }
 
-        clear();
+        //clear();
 
         const int BASE_Y = 2;
         const int LEFT_X = 2;
@@ -442,7 +443,7 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
         }
 
         */
-
+/*
 
         mvprintw(BASE_Y + 18, LEFT_X, "%s", p1.getPokemon().getNume().c_str());
         mvprintw(BASE_Y + 18, rightX, "%s", p2.getPokemon().getNume().c_str());
@@ -462,11 +463,12 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
 
         p1.getPokemon().reduceCooldown();
         p2.getPokemon().reduceCooldown();
-
+*/
         salveazaProgres(p1, p2);
 
     }
-    endwin();
+    //endwin();
+
     std::string castigator;
     if (poke1.esteViu()){
         std::cout << p1.getNume() << " a castigat!\n";
