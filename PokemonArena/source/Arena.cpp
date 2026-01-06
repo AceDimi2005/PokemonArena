@@ -412,9 +412,9 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
 
         //clear();
 
-        const int BASE_Y = 2;
-        const int LEFT_X = 2;
-        const int rightX = 40;
+        //const int BASE_Y = 2;
+        //const int LEFT_X = 2;
+        //const int rightX = 40;
 
         /*if (p1.getPokemon().getNume() == "Pikachu") art1 = &ASCII_PIKACHU_UNICODE;
         else if (p1.getPokemon().getNume() == "Charmander") art1 = &ASCII_CHARMANDER_UNICODE;
