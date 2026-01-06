@@ -6,6 +6,7 @@ set(MAIN_PROJECT_NAME "oop")
 set(MAIN_EXECUTABLE_NAME "${MAIN_PROJECT_NAME}")
 
 
+
 project(${MAIN_PROJECT_NAME})
 # set(CMAKE_PROJECT_VERSION_MAJOR 0)
 # set(CMAKE_PROJECT_VERSION_MINOR 0)
@@ -18,6 +19,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include(cmake/Options.cmake)
 include(cmake/CompilerFlags.cmake)
 include(cmake/CopyHelper.cmake)
+include(FetchContent)
+
+
 
 ###############################################################################
 
@@ -41,9 +45,24 @@ include(cmake/CopyHelper.cmake)
 
 ###############################################################################
 
-# external dependencies with find_package
+# external dependencies: ncurses (find_package + fallback FetchContent)
 
-# find_package(Threads REQUIRED)
+find_package(Curses)
+
+if (NOT CURSES_FOUND)
+    message(STATUS "ncurses not found, fetching via FetchContent")
+
+    FetchContent_Declare(
+        ncurses
+        GIT_REPOSITORY https://github.com/mirror/ncurses.git
+        GIT_TAG v6.4
+    )
+
+    FetchContent_MakeAvailable(ncurses)
+
+    set(CURSES_LIBRARIES ncurses form)
+    set(CURSES_INCLUDE_DIR ${ncurses_SOURCE_DIR}/include)
+endif()
 
 ###############################################################################
 
@@ -65,6 +84,9 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         PokemonArena/source/GrassAbility.cpp
         PokemonArena/headers/GameException.h
 )
+
+target_include_directories(${MAIN_EXECUTABLE_NAME} PRIVATE ${CURSES_INCLUDE_DIR})
+target_link_libraries(${MAIN_EXECUTABLE_NAME} PRIVATE ${CURSES_LIBRARIES})
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
 # NOTE: RUN_SANITIZERS is optional, if it's not present it will default to true

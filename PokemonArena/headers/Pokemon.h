@@ -15,6 +15,7 @@ private:
     std::string nume;
     std::string tip;
     int hp;
+    int maxHp;
     int attack;
     int defense;
     int speed;
@@ -30,6 +31,7 @@ public:
     [[nodiscard]] const std::string& getNume() const;
     [[nodiscard]] const std::string& getTip() const;
     [[nodiscard]] int getHP() const;
+    [[nodiscard]] int getMaxHP() const;
     [[nodiscard]] int getDefense() const;
     [[nodiscard]] int getSpeed() const;
     [[nodiscard]] bool esteViu() const;

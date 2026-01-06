@@ -1,8 +1,153 @@
+#include <locale.h>
+#include <codecvt>
+#include <locale>
 #include "../headers/Arena.h"
 #include "../headers/GameException.h"
 #include <random>
 #include <fstream>
+#include <ncurses.h>
+#include <vector>
+#include <string>
 
+static void drawHPBar(int y, int x, int hp, int maxHp) {
+    if (maxHp <= 0) return;
+
+    int width = 20;
+    int filled = hp * width / maxHp;
+    int percent = hp * 100 / maxHp;
+
+    int color = 1;
+    if (percent < 30) color = 3;
+    else if (percent < 60) color = 2;
+
+    attron(COLOR_PAIR(color));
+    mvaddch(y, x, '[');
+    for (int i = 0; i < width; ++i) {
+        mvaddch(y, x + 1 + i, (i < filled ? '#' : ' '));
+    }
+    mvaddch(y, x + width + 1, ']');
+    attroff(COLOR_PAIR(color));
+
+    mvprintw(y, x + width + 4, "%d/%d", hp, maxHp);
+}
+
+/*static const std::vector<std::string> ASCII_PIKACHU = {
+    "  \\__/\\",
+    " ( o.o )",
+    "  > ^ <"
+};
+
+static const std::vector<std::string> ASCII_BULBASAUR = {
+    "   /\\_/\\",
+    "  ( o o )",
+    "  /  ^  \\",
+    " (_______)"
+};
+
+static const std::vector<std::string> ASCII_CHARMANDER = {
+    "   /\\_/\\",
+    "  ( o o )",
+    "  >  ^  <",
+    "    ~~~"
+};
+
+static const std::vector<std::string> ASCII_SQUIRTLE = {
+    "   /\\_/\\",
+    "  ( o o )",
+    "  <  ^  >",
+    "  [_____]"
+};
+
+static const std::vector<std::wstring> ASCII_PIKACHU_UNICODE = {
+    L"⠸⣷⣦⠤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣠⣤⠀⠀⠀",
+    L"⠀⠙⣿⡄⠈⠑⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠔⠊⠉⣿⡿⠁⠀⠀⠀",
+    L"⠀⠀⠈⠣⡀⠀⠀⠑⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⡠⠊⠁⠀⠀⣰⠟⠀⠀⠀⣀⣀",
+    L"⠀⠀⠀⠀⠈⠢⣄⠀⡈⠒⠊⠉⠁⠀⠈⠉⠑⠚⠀⠀⣀⠔⢊⣠⠤⠒⠊⠉⠀⡜",
+    L"⠀⠀⠀⠀⠀⠀⠀⡽⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠩⡔⠊⠁⠀⠀⠀⠀⠀⠀⠇",
+    L"⠀⠀⠀⠀⠀⠀⠀⡇⢠⡤⢄⠀⠀⠀⠀⠀⡠⢤⣄⠀⡇⠀⠀⠀⠀⠀⠀⠀⢰⠀",
+    L"⠀⠀⠀⠀⠀⠀⢀⠇⠹⠿⠟⠀⠀⠤⠀⠀⠻⠿⠟⠀⣇⠀⠀⡀⠠⠄⠒⠊⠁⠀",
+    L"⠀⠀⠀⠀⠀⠀⢸⣿⣿⡆⠀⠰⠤⠖⠦⠴⠀⢀⣶⣿⣿⠀⠙⢄⠀⠀⠀⠀⠀⠀",
+    L"⠀⠀⠀⠀⠀⠀⠀⢻⣿⠃⠀⠀⠀⠀⠀⠀⠀⠈⠿⡿⠛⢄⠀⠀⠱⣄⠀⠀⠀⠀",
+    L"⠀⠀⠀⠀⠀⠀⠀⢸⠈⠓⠦⠀⣀⣀⣀⠀⡠⠴⠊⠹⡞⣁⠤⠒⠉⠀⠀⠀⠀⠀",
+    L"⠀⠀⠀⠀⠀⠀⣠⠃⠀⠀⠀⠀⡌⠉⠉⡤⠀⠀⠀⠀⢻⠿⠆⠀⠀⠀⠀⠀⠀⠀",
+    L"⠀⠀⠀⠀⠀⠰⠁⡀⠀⠀⠀⠀⢸⠀⢰⠃⠀⠀⠀⢠⠀⢣⠀⠀⠀⠀⠀⠀⠀⠀",
+    L"⠀⠀⠀⢶⣗⠧⡀⢳⠀⠀⠀⠀⢸⣀⣸⠀⠀⠀⢀⡜⠀⣸⢤⣶⠀⠀⠀⠀⠀⠀",
+    L"⠀⠀⠀⠈⠻⣿⣦⣈⣧⡀⠀⠀⢸⣿⣿⠀⠀⢀⣼⡀⣨⣿⡿⠁⠀⠀⠀⠀⠀⠀",
+    L"⠀⠀⠀⠀⠀⠈⠻⠿⠿⠓⠄⠤⠘⠉⠙⠤⢀⠾⠿⣿⠟⠋"
+};
+
+static const std::vector<std::wstring> ASCII_CHARMANDER_UNICODE = {
+    L"⠀⠀⠀⠀⠀⠀⠀⡀⠠⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+    L"⠀⠀⠀⠀⠀⡔⠁⠀⠀⠀⠈⠑⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+    L"⠀⠀⠀⠀⣜⠃⠀⠀⠀⢘⢳⢆⠘⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+    L"⠀⠀⢀⠔⠉⠀⠀⠀⠀⣜⠀⢸⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+    L"⠀⠀⢸⠀⡀⠀⠀⠀⠀⠈⠉⠁⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠀⠀",
+    L"⠀⡤⢄⣳⣦⠤⠤⠤⠄⣄⡲⡪⠀⡇⠀⢀⡀⢤⠀⠀⠀⢠⠒⢋⠤⠀",
+    L"⠘⢝⠁⠈⠙⠷⠒⠒⠾⠓⢎⠀⠀⠁⠉⠁⠈⢛⠆⠀⠀⠈⢷⣿⠀⣆",
+    L"⠀⠀⠑⢄⠀⡘⠀⠀⠀⠀⠀⠣⡀⠀⠀⣀⠔⠁⠀⠀⠀⢀⠃⠹⢷⡄",
+    L"⠀⠀⠀⠀⠑⡇⠀⠀⠀⠀⠀⠀⢡⠀⠈⡄⠀⠀⠀⠀⠀⠈⠣⢤⡼⠀",
+    L"⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⠀⡆⠀⠰⠀⠀⠀⠀⠀⠀⠀⡌⡇⠀",
+    L"⠀⠀⠀⠀⠀⢠⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⡇⠀⠀⠀⠀⢀⠌⢠⠃⠀",
+    L"⠀⠀⠀⠀⡐⠉⠣⡀⠀⠀⠀⠀⢀⠃⠂⠐⡎⠁⠒⠂⠈⠀⣠⠏⠀⠀",
+    L"⠀⠀⠀⠀⡀⠀⠀⠈⠒⡤⠀⠠⠊⠀⠀⠀⡠⣀⣀⠠⢄⠾⠃⠀⠀⠀",
+    L"⠀⠀⣀⡤⠚⠲⠀⠀⠸⡁⠀⢘⠄⠀⠀⣠⠋⠁⠀⠉⠁⠀⠀⠀⠀⠀",
+    L"⠀⠈⠛⡊⠂⠀⠀⠒⠂⠁⠀⠘⢖⣔⣶⡲⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀"
+};
+
+static const std::vector<std::wstring> ASCII_BULBASAUR_UNICODE = {
+    L"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+    L"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡠⠉⢳⠴⢲⠂⠀⠀⠀⠀⠀",
+    L"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣠⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠖⠊⠀⣠⠎⠀⡞⢹⠏⠀⠀⠀⠀",
+    L"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡴⠊⠁⠀⠀⠀⠀⠀⢀⡠⠤⠄⠀⠀⠀⠁⠀⠀⢀⠀⢸⠀⠀⠀⠀⠀",
+    L"⠀⠀⠀⠀⠀⣠⠤⠤⠄⣀⠀⠀⠀⠀⢀⣌⠀⠀⠀⠀⠀⢀⣠⣆⡁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠘⡄⠀⠀⠀⠀",
+    L"⠀⠀⠀⠀⡴⠁⠀⠀⠐⠛⠉⠁⠀⠀⣉⠉⠉⠉⠑⠒⠉⠁⠀⠀⢸⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢧⠀⠱⡀⠀⠀⠀",
+    L"⠀⠀⠀⢰⣥⠆⠀⠀⠀⣠⣴⣶⣿⣿⣿⠟⠀⠀⠀⠀⠀⠀⠀⠀⠀⢇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⡆⠀⠑⡄⠀⠀",
+    L"⠀⠀⢀⡜⠁⠀⠀⢀⠀⠻⣿⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⠀⠀⠸⡀⠀",
+    L"⠀⢀⣮⢖⣧⢠⠀⣿⠇⠀⠀⠁⠀⠀⠀⠠⠀⢀⣠⣴⣤⡀⠀⠀⠀⠈⡗⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⢱⠀",
+    L"⠀⣼⠃⣼⣿⠘⠀⠀⠀⢠⣶⣿⡆⠀⠀⠁⣠⠊⣸⣿⣿⣿⡄⠀⠀⠀⡇⠀⢑⣄⠀⠀⠀⠀⠀⠀⢠⠃⠀⠀⠸⡆",
+    L"⠀⣿⢰⣿⣿⠀⠀⠀⠀⠙⠻⠿⠁⠀⠀⠠⠁⠀⣿⣿⣿⣿⡇⠀⠀⠀⠇⠀⢻⣿⣷⣦⣀⡀⣀⠠⠋⠀⠀⠀⢀⡇",
+    L"⠈⠉⠺⠿⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⢿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠈⢿⣿⣿⣿⣿⢦⡀⠀⠀⠀⠀⡸⠀",
+    L"⠘⣟⠦⢀⠀⠀⢠⠀⠀⡠⠀⠀⠀⠀⠀⠀⠉⠉⠉⠉⠁⣀⠔⠀⠀⠀⠀⠀⠀⠀⠛⠻⠟⠋⠀⠙⢦⠀⣠⠜⠀⠀",
+    L"⠀⠈⠑⠤⡙⠳⣶⣦⣤⣤⣤⣤⣤⣤⣤⣤⣴⣶⡶⠞⠁⠀⠀⣠⠖⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠈⢯⠁⠀⠀⠀",
+    L"⠀⠀⠀⠀⠈⢳⠤⣙⡻⠿⣿⣿⣿⣿⡿⠿⠛⠉⠀⢀⣀⡤⡚⠁⠀⠀⠀⠀⠀⠀⣧⠖⣁⣤⣦⠀⠀⠈⢇⠀⠀⠀",
+    L"⠀⠀⠀⠀⠀⢸⠀⢀⣩⣍⠓⠒⣒⠒⠒⠒⠒⠊⠉⠁⢀⡟⠀⠀⣾⣷⠀⠀⠀⠀⠏⢴⣿⣿⣿⠀⠀⠀⢸⠀⠀⠀",
+    L"⠀⠀⠀⠀⠀⠘⣶⣿⣿⣿⠀⠀⠈⠒⢄⣀⡀⠀⠀⠀⣼⣶⣿⡇⠈⠋⠀⠀⠀⡼⠀⠈⠻⣿⡿⠀⠀⠀⢸⠀⠀⠀",
+    L"⠀⠀⠀⠀⠀⠀⠹⡿⠿⠋⠀⠀⠀⠀⡜⠁⠈⢯⡀⢺⣿⣿⣿⠃⠀⠀⠀⢀⣼⣇⠀⠀⠀⠀⠀⠀⠀⠀⡞⠀⠀⠀",
+    L"⠀⠀⠀⠀⠀⠀⠀⣿⣦⣄⣠⣀⣠⠞⠀⠀⠀⠈⠛⣿⡛⠛⠁⠀⠀⠀⣠⠊⠀⠈⢦⣄⣀⣀⣀⣀⢀⡼⠁⠀⠀⠀",
+    L"⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠛⠉⠀⠀⠀⠀⠀⠀⠘⠛⠿⣿⠷⡾⠗⠊⠁⠀⠀⠀⠈⠉⠙⠛⠛⠛⠉⠀⠀⠀⠀⠀"
+};
+
+static const std::vector<std::string>& getAsciiForPokemon(const std::string& nume) {
+    if (nume == "Pikachu") return ASCII_PIKACHU;
+    if (nume == "Bulbasaur") return ASCII_BULBASAUR;
+    if (nume == "Charmander") return ASCII_CHARMANDER;
+    if (nume == "Squirtle") return ASCII_SQUIRTLE;
+    return ASCII_PIKACHU; // fallback
+}
+
+static void drawAsciiArt(int y, int x, const std::vector<std::string>& art) {
+    for (size_t i = 0; i < art.size(); ++i) {
+        mvprintw(y + i, x, "%s", art[i].c_str());
+    }
+}
+
+static int asciiWidth(const std::vector<std::wstring>& art) {
+    size_t maxLen = 0;
+    for (const auto& line : art) {
+        if (line.size() > maxLen)
+            maxLen = line.size();
+    }
+    return static_cast<int>(maxLen);
+}
+
+static void drawAsciiArtWide(int y, int x, const std::vector<std::wstring>& art) {
+    static std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+    for (size_t i = 0; i < art.size(); ++i) {
+        std::string utf8 = converter.to_bytes(art[i]);
+        mvaddstr(y + i, x, utf8.c_str());
+    }
+}
+*/
 Arena::Arena() {
 
     listaPokemoni.emplace_back("Pikachu", "Electric", 1200, 55, 40, 90);
@@ -173,6 +318,17 @@ void Arena::startGame() const {
 }
 
 void Arena::desfasoaraLupta(Player& p1, Player& p2) {
+    setlocale(LC_ALL, "");
+    initscr();
+    noecho();
+    cbreak();
+    keypad(stdscr, TRUE);
+    curs_set(0);
+    start_color();
+    init_pair(1, COLOR_GREEN, COLOR_BLACK);
+    init_pair(2, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(3, COLOR_RED, COLOR_BLACK);
+
     const Pokemon& poke1 = p1.getPokemon();
     const Pokemon& poke2 = p2.getPokemon();
 
@@ -253,8 +409,56 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
         }
         }
 
-        std::cout << "\n=== Stare dupa runda ===\n";
-        std::cout << p1.getNume() << ": " << p1.getPokemon().getHP() << " HP\n"<< p2.getNume() << ": " << p2.getPokemon().getHP() << " HP\n";
+        clear();
+
+        const int BASE_Y = 2;
+        const int LEFT_X = 2;
+        const int rightX = 40;
+
+        /*if (p1.getPokemon().getNume() == "Pikachu") art1 = &ASCII_PIKACHU_UNICODE;
+        else if (p1.getPokemon().getNume() == "Charmander") art1 = &ASCII_CHARMANDER_UNICODE;
+        else if (p1.getPokemon().getNume() == "Bulbasaur") art1 = &ASCII_BULBASAUR_UNICODE;
+
+        if (p2.getPokemon().getNume() == "Pikachu") art2 = &ASCII_PIKACHU_UNICODE;
+        else if (p2.getPokemon().getNume() == "Charmander") art2 = &ASCII_CHARMANDER_UNICODE;
+        else if (p2.getPokemon().getNume() == "Bulbasaur") art2 = &ASCII_BULBASAUR_UNICODE;
+
+
+
+        int rightX;
+
+        if (art1) {
+            drawAsciiArtWide(BASE_Y, LEFT_X, *art1);
+            rightX = LEFT_X + asciiWidth(*art1) + 8;  // deplasare după lățimea reală
+        } else {
+            drawAsciiArt(BASE_Y, LEFT_X, getAsciiForPokemon(p1.getPokemon().getNume()));
+            rightX = LEFT_X + 30; // fallback ASCII mic
+        }
+
+        if (art2) {
+            drawAsciiArtWide(BASE_Y, rightX, *art2);
+        } else {
+            drawAsciiArt(BASE_Y, rightX, getAsciiForPokemon(p2.getPokemon().getNume()));
+        }
+
+        */
+
+
+        mvprintw(BASE_Y + 18, LEFT_X, "%s", p1.getPokemon().getNume().c_str());
+        mvprintw(BASE_Y + 18, rightX, "%s", p2.getPokemon().getNume().c_str());
+
+
+        drawHPBar(BASE_Y + 19, LEFT_X,
+                  p1.getPokemon().getHP(),
+                  p1.getPokemon().getMaxHP());
+
+        drawHPBar(BASE_Y + 19, rightX,
+                  p2.getPokemon().getHP(),
+                  p2.getPokemon().getMaxHP());
+
+        mvprintw(12, 2, "Apasa orice tasta pentru runda urmatoare...");
+        refresh();
+        getch();
 
         p1.getPokemon().reduceCooldown();
         p2.getPokemon().reduceCooldown();
@@ -262,6 +466,7 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
         salveazaProgres(p1, p2);
 
     }
+    endwin();
     std::string castigator;
     if (poke1.esteViu()){
         std::cout << p1.getNume() << " a castigat!\n";
