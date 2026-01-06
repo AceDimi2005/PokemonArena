@@ -350,135 +350,88 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
 
     std::cout << first->getNume() << " va incepe primul!\n";
 
-    while (poke1.esteViu() && poke2.esteViu()) {
+   while (poke1.esteViu() && poke2.esteViu()) {
 
         Pokemon& attacker = first->getPokemon();
         Pokemon& defender = second->getPokemon();
+
+        // --- TURA JUCĂTORULUI 1 ---
         if (attacker.isStunned()) {
-            std::cout << attacker.getNume() << " este paralizat si nu se poate misca!\n";
-            attacker.setStunned(false); // Stun-ul trece după o rundă pierdută
+            std::cout << "\n" << attacker.getNume() << " este paralizat si pierde randul!\n";
+            attacker.setStunned(false); // Stun-ul trece
         }
         else {
-            // --- MUTĂ TOT CODUL DE ACȚIUNE AICI (în ELSE) ---
             std::cout << "\n" << first->getNume() << ", alege o actiune:\n";
             std::cout << "1. Atac normal\n";
-        std::cout << "2. Aparare\n";
-        std::cout << "3. Abilitate speciala\n> ";
+            std::cout << "2. Aparare\n";
+            std::cout << "3. Abilitate speciala\n> ";
 
-        int actiune;
-        if (first->getNume() == "AI") {
-            actiune = distrib(gen);
-        } else {
-            std::cin >> actiune;
-        }
+            int actiune;
+            if (first->getNume() == "AI") {
+                actiune = distrib(gen);
+            } else {
+                std::cin >> actiune;
+            }
 
-        if (actiune == 1) {
-            attacker.ataca(defender);
-        } else if (actiune == 2) {
-            attacker.setDefending(true);
-            std::cout << attacker.getNume() << " se apara!\n";
-        } else if (actiune == 3) {
-            attacker.folosesteAbilitate(defender);
-        } else {
-            std::cout << "Actiune invalida. Se considera atac normal.\n";
-            attacker.ataca(defender);
-        }
+            if (actiune == 1) {
+                attacker.ataca(defender);
+            } else if (actiune == 2) {
+                attacker.setDefending(true);
+                std::cout << attacker.getNume() << " se apara!\n";
+            } else if (actiune == 3) {
+                attacker.folosesteAbilitate(defender);
+            } else {
+                std::cout << "Actiune invalida. Se considera atac normal.\n";
+                attacker.ataca(defender);
+            }
+        } // Aici se închide ELSE-ul jucătorului 1
 
 
-        if (attacker.esteViu() && defender.esteViu())
+        // Verificăm dacă adversarul a murit înainte să îi dăm rândul
+        if (defender.esteViu())
         {
-        Pokemon& attacker2 = second->getPokemon();
-        Pokemon& defender2 = first->getPokemon();
+            Pokemon& attacker2 = second->getPokemon();
+            Pokemon& defender2 = first->getPokemon();
 
-        std::cout << "\n" << second->getNume() << ", alege o actiune:\n";
-        std::cout << "1. Atac normal\n";
-        std::cout << "2. Aparare\n";
-        std::cout << "3. Abilitate speciala\n> ";
+            // --- TURA JUCĂTORULUI 2 ---
+            if (attacker2.isStunned()) {
+                std::cout << "\n" << attacker2.getNume() << " este paralizat si pierde randul!\n";
+                attacker2.setStunned(false);
+            }
+            else {
+                std::cout << "\n" << second->getNume() << ", alege o actiune:\n";
+                std::cout << "1. Atac normal\n";
+                std::cout << "2. Aparare\n";
+                std::cout << "3. Abilitate speciala\n> ";
 
-        if (second->getNume() == "AI") {
-            actiune = distrib(gen);
-            std::cout << actiune << "\n";
-        } else {
-            std::cin >> actiune;
+                int actiune;
+                if (second->getNume() == "AI") {
+                    actiune = distrib(gen);
+                    std::cout << actiune << "\n";
+                } else {
+                    std::cin >> actiune;
+                }
+
+                if (actiune == 1) {
+                    attacker2.ataca(defender2);
+                } else if (actiune == 2) {
+                    attacker2.setDefending(true);
+                    std::cout << attacker2.getNume() << " se apara!\n";
+                } else if (actiune == 3) {
+                    attacker2.folosesteAbilitate(defender2);
+                } else {
+                    std::cout << "Actiune invalida. Se considera atac normal.\n";
+                    attacker2.ataca(defender2);
+                }
+            } // Aici se închide ELSE-ul jucătorului 2
         }
 
-        if (actiune == 1) {
-            attacker2.ataca(defender2);
-        } else if (actiune == 2) {
-            attacker2.setDefending(true);
-            std::cout << attacker2.getNume() << " se apara!\n";
-        } else if (actiune == 3) {
-            attacker2.folosesteAbilitate(defender2);
-        } else {
-            std::cout << "Actiune invalida. Se considera atac normal.\n";
-            attacker2.ataca(defender2);
-        }
-        }
-
-        //clear();
-
-        //const int BASE_Y = 2;
-        //const int LEFT_X = 2;
-        //const int rightX = 40;
-
-        /*if (p1.getPokemon().getNume() == "Pikachu") art1 = &ASCII_PIKACHU_UNICODE;
-        else if (p1.getPokemon().getNume() == "Charmander") art1 = &ASCII_CHARMANDER_UNICODE;
-        else if (p1.getPokemon().getNume() == "Bulbasaur") art1 = &ASCII_BULBASAUR_UNICODE;
-
-        if (p2.getPokemon().getNume() == "Pikachu") art2 = &ASCII_PIKACHU_UNICODE;
-        else if (p2.getPokemon().getNume() == "Charmander") art2 = &ASCII_CHARMANDER_UNICODE;
-        else if (p2.getPokemon().getNume() == "Bulbasaur") art2 = &ASCII_BULBASAUR_UNICODE;
-
-
-
-        int rightX;
-
-        if (art1) {
-            drawAsciiArtWide(BASE_Y, LEFT_X, *art1);
-            rightX = LEFT_X + asciiWidth(*art1) + 8;  // deplasare după lățimea reală
-        } else {
-            drawAsciiArt(BASE_Y, LEFT_X, getAsciiForPokemon(p1.getPokemon().getNume()));
-            rightX = LEFT_X + 30; // fallback ASCII mic
-        }
-
-        if (art2) {
-            drawAsciiArtWide(BASE_Y, rightX, *art2);
-        } else {
-            drawAsciiArt(BASE_Y, rightX, getAsciiForPokemon(p2.getPokemon().getNume()));
-        }
-
-        */
-/*
-
-        mvprintw(BASE_Y + 18, LEFT_X, "%s", p1.getPokemon().getNume().c_str());
-        mvprintw(BASE_Y + 18, rightX, "%s", p2.getPokemon().getNume().c_str());
-
-
-        drawHPBar(BASE_Y + 19, LEFT_X,
-                  p1.getPokemon().getHP(),
-                  p1.getPokemon().getMaxHP());
-
-        drawHPBar(BASE_Y + 19, rightX,
-                  p2.getPokemon().getHP(),
-                  p2.getPokemon().getMaxHP());
-
-        mvprintw(12, 2, "Apasa orice tasta pentru runda urmatoare...");
-        refresh();
-        getch();
-
-        p1.getPokemon().reduceCooldown();
-        p2.getPokemon().reduceCooldown();
-*/
-
+        // --- FINAL DE RUNDĂ ---
         p1.getPokemon().reduceCooldown();
         p2.getPokemon().reduceCooldown();
         salveazaProgres(p1, p2);
 
-        }
-
-
-
-    }
+    } // Sfârșit while
     //endwin();
 
     std::string castigator;
