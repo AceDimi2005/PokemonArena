@@ -31,7 +31,6 @@ public:
     [[nodiscard]] const std::string& getNume() const;
     [[nodiscard]] const std::string& getTip() const;
     [[nodiscard]] int getHP() const;
-    [[nodiscard]] int getMaxHP() const;
     [[nodiscard]] int getDefense() const;
     [[nodiscard]] int getSpeed() const;
     [[nodiscard]] bool esteViu() const;
@@ -40,7 +39,7 @@ public:
 
     void reseteazaAbilitatea();
     [[nodiscard]] bool poateFolosiiAbilitatea() const;
-    void reduceCooldown();
+    //void reduceCooldown();
     int folosesteAbilitate(Pokemon& adversar);
 
     static float eficientaTip(const std::string& tipAtacant, const std::string& tipAdversar);

@@ -77,10 +77,11 @@ bool Pokemon::poateFolosiiAbilitatea() const {
     return cooldown == 0;
 }
 
-void Pokemon::reduceCooldown() {
+/*void Pokemon::reduceCooldown() {
     if (cooldown > 0)
         cooldown--;
 }
+*/
 
 int Pokemon::folosesteAbilitate(Pokemon& adversar) {
     if (!poateFolosiiAbilitatea()) {
@@ -170,8 +171,4 @@ std::ostream& operator<<(std::ostream& out, const Pokemon& p) {
         << " | Spd: " << p.speed
         << " | Cooldown: " << p.cooldown << "/" << p.cooldownMax;
     return out;
-}
-
-int Pokemon::getMaxHP() const {
-    return maxHp;
 }
