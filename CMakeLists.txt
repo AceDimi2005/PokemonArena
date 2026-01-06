@@ -117,3 +117,5 @@ copy_files(FILES tastatura.txt COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE
 # copy_files(DIRECTORY images sounds COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
 
 target_compile_options(oop PRIVATE -fno-sanitize=leak)
+target_compile_options(${MAIN_EXECUTABLE_NAME} PRIVATE -fno-sanitize=leak)
+target_link_options(${MAIN_EXECUTABLE_NAME} PRIVATE -fno-sanitize=leak)
