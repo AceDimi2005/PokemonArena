@@ -354,9 +354,14 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
 
         Pokemon& attacker = first->getPokemon();
         Pokemon& defender = second->getPokemon();
-
-        std::cout << "\n" << first->getNume() << ", alege o actiune:\n";
-        std::cout << "1. Atac normal\n";
+        if (attacker.isStunned()) {
+            std::cout << attacker.getNume() << " este paralizat si nu se poate misca!\n";
+            attacker.setStunned(false); // Stun-ul trece după o rundă pierdută
+        }
+        else {
+            // --- MUTĂ TOT CODUL DE ACȚIUNE AICI (în ELSE) ---
+            std::cout << "\n" << first->getNume() << ", alege o actiune:\n";
+            std::cout << "1. Atac normal\n";
         std::cout << "2. Aparare\n";
         std::cout << "3. Abilitate speciala\n> ";
 
@@ -468,6 +473,10 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
         p1.getPokemon().reduceCooldown();
         p2.getPokemon().reduceCooldown();
         salveazaProgres(p1, p2);
+
+        }
+
+
 
     }
     //endwin();
