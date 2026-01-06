@@ -12,7 +12,7 @@ float ElectricAbility::getEfficiency(const std::string& adversarTip) const {
 ElectricAbility::ElectricAbility(int bonus)
     : bonus(bonus) {}
 
-/*int ElectricAbility::use(int atk, int /*def, const std::string& adversarTip) const {
+/*int ElectricAbility::use(int atk, int def, const std::string& adversarTip) const {
     float factor = eficientaTip("Electric", adversarTip);
     return static_cast<int>((atk + bonus) * factor);
 }
