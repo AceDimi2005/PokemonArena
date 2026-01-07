@@ -35,7 +35,7 @@ public:
     void modifyAttack(int amount) { attack += amount; }
 
     void setStunned(bool val) { stunned = val; }
-    bool isStunned() const { return stunned; }
+    [[nodiscard]] bool isStunned() const { return stunned; }
     [[nodiscard]] const std::string& getNume() const;
     [[nodiscard]] const std::string& getTip() const;
     [[nodiscard]] int getHP() const;

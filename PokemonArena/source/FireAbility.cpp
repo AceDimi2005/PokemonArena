@@ -5,17 +5,6 @@
 FireAbility::FireAbility(int power)
     : Ability(), power(power) {}
 
-/*int FireAbility::use(int attackerAtk, int defenderDef, const std::string& adversarTip) const {
-    float factor = eficientaTip("Foc", adversarTip);
-    int damage = static_cast<int>((attackerAtk + power - defenderDef) * factor);
-    return damage > 0 ? damage : 0;
-}*/
-
-/*Ability* FireAbility::clone() const {
-    return new FireAbility(*this);
-}
-*/
-
 Ability* FireAbility::clone() const {
     return new FireAbility(*this);
 }

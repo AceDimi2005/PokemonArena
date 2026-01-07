@@ -12,16 +12,6 @@ float GrassAbility::getEfficiency(const std::string& adversarTip) const {
 GrassAbility::GrassAbility(int power)
     : power(power) {}
 
-/*int GrassAbility::use(int atk, int def,
-                      const std::string& adversarTip) const {
-    float factor = eficientaTip("Iarba", adversarTip);
-    int damage = static_cast<int>((atk + power - def) * factor);
-    return damage > 0 ? damage : 0;
-}
-Ability* GrassAbility::clone() const {
-    return new GrassAbility(*this);
-}
-*/
 
 Ability* GrassAbility::clone() const {
     return new GrassAbility(*this);

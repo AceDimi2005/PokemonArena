@@ -9,9 +9,6 @@ public:
 
     virtual float getEfficiency(const std::string& adversarTip) const = 0;
 
-    /*virtual int use(int atk, int def,
-                const std::string& adversarTip) const = 0;
-*/
     virtual void execute(Pokemon& atacator, Pokemon& aparator) const = 0;
 
     virtual Ability* clone() const = 0;

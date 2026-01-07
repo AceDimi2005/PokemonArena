@@ -355,7 +355,7 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
         Pokemon& attacker = first->getPokemon();
         Pokemon& defender = second->getPokemon();
 
-        // --- TURA JUCĂTORULUI 1 ---
+
         if (attacker.isStunned()) {
             std::cout << "\n" << attacker.getNume() << " este paralizat si pierde randul!\n";
             attacker.setStunned(false); // Stun-ul trece
@@ -384,16 +384,16 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
                 std::cout << "Actiune invalida. Se considera atac normal.\n";
                 attacker.ataca(defender);
             }
-        } // Aici se închide ELSE-ul jucătorului 1
+        }
 
 
-        // Verificăm dacă adversarul a murit înainte să îi dăm rândul
+
         if (defender.esteViu())
         {
             Pokemon& attacker2 = second->getPokemon();
             Pokemon& defender2 = first->getPokemon();
 
-            // --- TURA JUCĂTORULUI 2 ---
+
             if (attacker2.isStunned()) {
                 std::cout << "\n" << attacker2.getNume() << " este paralizat si pierde randul!\n";
                 attacker2.setStunned(false);
@@ -423,16 +423,15 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
                     std::cout << "Actiune invalida. Se considera atac normal.\n";
                     attacker2.ataca(defender2);
                 }
-            } // Aici se închide ELSE-ul jucătorului 2
+            }
         }
 
-        // --- FINAL DE RUNDĂ ---
         p1.getPokemon().reduceCooldown();
         p2.getPokemon().reduceCooldown();
         salveazaProgres(p1, p2);
 
-    } // Sfârșit while
-    //endwin();
+    }
+
 
     std::string castigator;
     if (poke1.esteViu()){

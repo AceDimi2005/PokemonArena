@@ -9,8 +9,6 @@ class FireAbility : public Ability {
 public:
     explicit FireAbility(int power);
 
-    /*int use(int atk, int def,
-        const std::string& adversarTip) const override;*/
     void execute(Pokemon& atacator, Pokemon& aparator) const override;
     float getEfficiency(const std::string& adversarTip) const override;
 

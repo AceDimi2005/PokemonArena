@@ -6,8 +6,6 @@ class ElectricAbility : public Ability {
 public:
     explicit ElectricAbility(int bonus);
     void overcharge();
-   /* int use(int atk, int def,
-        const std::string& adversarTip) const override;*/
     void execute(Pokemon& atacator, Pokemon& aparator) const override;
     float getEfficiency(const std::string& adversarTip) const override;
 
