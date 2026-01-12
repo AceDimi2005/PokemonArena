@@ -1,0 +1,46 @@
+{
+  "pokemons": [
+    { "nume": "Pikachu", "tip": "Electric", "hp": 1200, "attack": 55, "defense": 40, "speed": 90 },
+    { "nume": "Bulbasaur", "tip": "Iarba", "hp": 1400, "attack": 49, "defense": 49, "speed": 45 },
+    { "nume": "Charmander", "tip": "Foc", "hp": 1200, "attack": 52, "defense": 43, "speed": 65 },
+    { "nume": "Squirtle", "tip": "Apa", "hp": 1300, "attack": 48, "defense": 65, "speed": 43 }
+  ],
+  "type_chart": [
+    { "attacker": "Foc", "defender": "Iarba", "multiplier": 2.0 },
+    { "attacker": "Foc", "defender": "Apa", "multiplier": 0.5 },
+    { "attacker": "Apa", "defender": "Foc", "multiplier": 2.0 },
+    { "attacker": "Apa", "defender": "Iarba", "multiplier": 0.5 },
+    { "attacker": "Apa", "defender": "Electric", "multiplier": 1.0 },
+    { "attacker": "Iarba", "defender": "Apa", "multiplier": 2.0 },
+    { "attacker": "Iarba", "defender": "Foc", "multiplier": 0.5 },
+    { "attacker": "Electric", "defender": "Apa", "multiplier": 2.0 },
+    { "attacker": "Electric", "defender": "Iarba", "multiplier": 0.5 }
+  ],
+  "messages": {
+    "start_game_title": "=== Pokemon Arena ===\n",
+    "menu_options": "1. Continuă ultimul meci\n2. Joc nou\n3. Afiseaza leaderboard-ul\nAlege optiunea: ",
+    "attack_msg": "{attacker} a atacat {defender} si a provocat {damage} damage!\n",
+    "super_effective": "Este foarte eficient!\n",
+    "not_very_effective": "Nu este prea eficient...\n",
+    "defense_msg": "{name} s-a aparat si a redus damage-ul la {damage}!\n",
+    "heal_msg": "{name} s-a vindecat cu {amount} HP!\n",
+    "ability_cooldown": "{name} nu isi poate folosi abilitatea inca! ({cooldown} runde ramase)\n",
+    "stunned_msg": "\n{name} este paralizat si pierde randul!\n",
+    "stunned_hit_msg": "ZZZT! {name} a fost electrizat si a paralizat!\n",
+    "electric_overcharge": "{name} isi incarca electricitatea!\n",
+    "fire_buff": "{name} se infierbanta! Atacul i-a crescut cu {amount} puncte!\n",
+    "water_steal": "{name} a furat {amount} HP de la inamic!\n",
+    "grass_recoil": "{name} a suferit {amount} damage din cauza reculului loviturii puternice!\n",
+    "game_load_success": "\n=== Joc incarcat cu succes! ===\n",
+    "game_load_fail": "Eroare: Pokemonii salvati nu au fost gasiti.\n",
+    "save_file_missing": "Nu există un fisier de salvare.\n",
+    "choose_mode_msg": "=== Pokemon Arena ===\n1. Player vs Player\n2. Player vs AI\nAlege modul: ",
+    "enter_name_p1": "Introdu numele pentru Player 1: ",
+    "enter_name_p2": "Introdu numele pentru Player 2: ",
+    "battle_start": "\n=== Lupta incepe! ===\n",
+    "first_turn": "{name} va incepe primul!\n",
+    "battle_action_menu": "\n{name}, alege o actiune:\n1. Atac normal\n2. Aparare\n3. Abilitate speciala\n> ",
+    "invalid_action": "Actiune invalida. Se considera atac normal.\n",
+    "win_msg": "{name} a castigat!\n"
+  }
+}

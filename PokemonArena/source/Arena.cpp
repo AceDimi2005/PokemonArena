@@ -1,160 +1,22 @@
-#include <locale.h>
-#include <codecvt>
-#include <locale>
 #include "../headers/Arena.h"
 #include "../headers/GameException.h"
-#include <random>
+#include "../headers/GameConfig.h"
+#include <iostream>
 #include <fstream>
-//#include <ncurses.h>
-#include <vector>
+#include <random>
+#include <locale>
 #include <string>
 
-/*static void drawHPBar(int y, int x, int hp, int maxHp) {
-    if (maxHp <= 0) return;
-
-    int width = 20;
-    int filled = hp * width / maxHp;
-    int percent = hp * 100 / maxHp;
-
-    int color = 1;
-    if (percent < 30) color = 3;
-    else if (percent < 60) color = 2;
-
-    attron(COLOR_PAIR(color));
-    mvaddch(y, x, '[');
-    for (int i = 0; i < width; ++i) {
-        mvaddch(y, x + 1 + i, (i < filled ? '#' : ' '));
+static std::string formatMessage(std::string msg, const std::string& key, const std::string& value) {
+    size_t pos;
+    while ((pos = msg.find(key)) != std::string::npos) {
+        msg.replace(pos, key.length(), value);
     }
-    mvaddch(y, x + width + 1, ']');
-    attroff(COLOR_PAIR(color));
-
-    mvprintw(y, x + width + 4, "%d/%d", hp, maxHp);
-}
-*/
-
-/*static const std::vector<std::string> ASCII_PIKACHU = {
-    "  \\__/\\",
-    " ( o.o )",
-    "  > ^ <"
-};
-
-static const std::vector<std::string> ASCII_BULBASAUR = {
-    "   /\\_/\\",
-    "  ( o o )",
-    "  /  ^  \\",
-    " (_______)"
-};
-
-static const std::vector<std::string> ASCII_CHARMANDER = {
-    "   /\\_/\\",
-    "  ( o o )",
-    "  >  ^  <",
-    "    ~~~"
-};
-
-static const std::vector<std::string> ASCII_SQUIRTLE = {
-    "   /\\_/\\",
-    "  ( o o )",
-    "  <  ^  >",
-    "  [_____]"
-};
-
-static const std::vector<std::wstring> ASCII_PIKACHU_UNICODE = {
-    L"⠸⣷⣦⠤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣠⣤⠀⠀⠀",
-    L"⠀⠙⣿⡄⠈⠑⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠔⠊⠉⣿⡿⠁⠀⠀⠀",
-    L"⠀⠀⠈⠣⡀⠀⠀⠑⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⡠⠊⠁⠀⠀⣰⠟⠀⠀⠀⣀⣀",
-    L"⠀⠀⠀⠀⠈⠢⣄⠀⡈⠒⠊⠉⠁⠀⠈⠉⠑⠚⠀⠀⣀⠔⢊⣠⠤⠒⠊⠉⠀⡜",
-    L"⠀⠀⠀⠀⠀⠀⠀⡽⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠩⡔⠊⠁⠀⠀⠀⠀⠀⠀⠇",
-    L"⠀⠀⠀⠀⠀⠀⠀⡇⢠⡤⢄⠀⠀⠀⠀⠀⡠⢤⣄⠀⡇⠀⠀⠀⠀⠀⠀⠀⢰⠀",
-    L"⠀⠀⠀⠀⠀⠀⢀⠇⠹⠿⠟⠀⠀⠤⠀⠀⠻⠿⠟⠀⣇⠀⠀⡀⠠⠄⠒⠊⠁⠀",
-    L"⠀⠀⠀⠀⠀⠀⢸⣿⣿⡆⠀⠰⠤⠖⠦⠴⠀⢀⣶⣿⣿⠀⠙⢄⠀⠀⠀⠀⠀⠀",
-    L"⠀⠀⠀⠀⠀⠀⠀⢻⣿⠃⠀⠀⠀⠀⠀⠀⠀⠈⠿⡿⠛⢄⠀⠀⠱⣄⠀⠀⠀⠀",
-    L"⠀⠀⠀⠀⠀⠀⠀⢸⠈⠓⠦⠀⣀⣀⣀⠀⡠⠴⠊⠹⡞⣁⠤⠒⠉⠀⠀⠀⠀⠀",
-    L"⠀⠀⠀⠀⠀⠀⣠⠃⠀⠀⠀⠀⡌⠉⠉⡤⠀⠀⠀⠀⢻⠿⠆⠀⠀⠀⠀⠀⠀⠀",
-    L"⠀⠀⠀⠀⠀⠰⠁⡀⠀⠀⠀⠀⢸⠀⢰⠃⠀⠀⠀⢠⠀⢣⠀⠀⠀⠀⠀⠀⠀⠀",
-    L"⠀⠀⠀⢶⣗⠧⡀⢳⠀⠀⠀⠀⢸⣀⣸⠀⠀⠀⢀⡜⠀⣸⢤⣶⠀⠀⠀⠀⠀⠀",
-    L"⠀⠀⠀⠈⠻⣿⣦⣈⣧⡀⠀⠀⢸⣿⣿⠀⠀⢀⣼⡀⣨⣿⡿⠁⠀⠀⠀⠀⠀⠀",
-    L"⠀⠀⠀⠀⠀⠈⠻⠿⠿⠓⠄⠤⠘⠉⠙⠤⢀⠾⠿⣿⠟⠋"
-};
-
-static const std::vector<std::wstring> ASCII_CHARMANDER_UNICODE = {
-    L"⠀⠀⠀⠀⠀⠀⠀⡀⠠⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
-    L"⠀⠀⠀⠀⠀⡔⠁⠀⠀⠀⠈⠑⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
-    L"⠀⠀⠀⠀⣜⠃⠀⠀⠀⢘⢳⢆⠘⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
-    L"⠀⠀⢀⠔⠉⠀⠀⠀⠀⣜⠀⢸⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
-    L"⠀⠀⢸⠀⡀⠀⠀⠀⠀⠈⠉⠁⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠀⠀",
-    L"⠀⡤⢄⣳⣦⠤⠤⠤⠄⣄⡲⡪⠀⡇⠀⢀⡀⢤⠀⠀⠀⢠⠒⢋⠤⠀",
-    L"⠘⢝⠁⠈⠙⠷⠒⠒⠾⠓⢎⠀⠀⠁⠉⠁⠈⢛⠆⠀⠀⠈⢷⣿⠀⣆",
-    L"⠀⠀⠑⢄⠀⡘⠀⠀⠀⠀⠀⠣⡀⠀⠀⣀⠔⠁⠀⠀⠀⢀⠃⠹⢷⡄",
-    L"⠀⠀⠀⠀⠑⡇⠀⠀⠀⠀⠀⠀⢡⠀⠈⡄⠀⠀⠀⠀⠀⠈⠣⢤⡼⠀",
-    L"⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⠀⡆⠀⠰⠀⠀⠀⠀⠀⠀⠀⡌⡇⠀",
-    L"⠀⠀⠀⠀⠀⢠⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⡇⠀⠀⠀⠀⢀⠌⢠⠃⠀",
-    L"⠀⠀⠀⠀⡐⠉⠣⡀⠀⠀⠀⠀⢀⠃⠂⠐⡎⠁⠒⠂⠈⠀⣠⠏⠀⠀",
-    L"⠀⠀⠀⠀⡀⠀⠀⠈⠒⡤⠀⠠⠊⠀⠀⠀⡠⣀⣀⠠⢄⠾⠃⠀⠀⠀",
-    L"⠀⠀⣀⡤⠚⠲⠀⠀⠸⡁⠀⢘⠄⠀⠀⣠⠋⠁⠀⠉⠁⠀⠀⠀⠀⠀",
-    L"⠀⠈⠛⡊⠂⠀⠀⠒⠂⠁⠀⠘⢖⣔⣶⡲⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀"
-};
-
-static const std::vector<std::wstring> ASCII_BULBASAUR_UNICODE = {
-    L"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
-    L"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡠⠉⢳⠴⢲⠂⠀⠀⠀⠀⠀",
-    L"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣠⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠖⠊⠀⣠⠎⠀⡞⢹⠏⠀⠀⠀⠀",
-    L"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡴⠊⠁⠀⠀⠀⠀⠀⢀⡠⠤⠄⠀⠀⠀⠁⠀⠀⢀⠀⢸⠀⠀⠀⠀⠀",
-    L"⠀⠀⠀⠀⠀⣠⠤⠤⠄⣀⠀⠀⠀⠀⢀⣌⠀⠀⠀⠀⠀⢀⣠⣆⡁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠘⡄⠀⠀⠀⠀",
-    L"⠀⠀⠀⠀⡴⠁⠀⠀⠐⠛⠉⠁⠀⠀⣉⠉⠉⠉⠑⠒⠉⠁⠀⠀⢸⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢧⠀⠱⡀⠀⠀⠀",
-    L"⠀⠀⠀⢰⣥⠆⠀⠀⠀⣠⣴⣶⣿⣿⣿⠟⠀⠀⠀⠀⠀⠀⠀⠀⠀⢇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⡆⠀⠑⡄⠀⠀",
-    L"⠀⠀⢀⡜⠁⠀⠀⢀⠀⠻⣿⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⠀⠀⠸⡀⠀",
-    L"⠀⢀⣮⢖⣧⢠⠀⣿⠇⠀⠀⠁⠀⠀⠀⠠⠀⢀⣠⣴⣤⡀⠀⠀⠀⠈⡗⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⢱⠀",
-    L"⠀⣼⠃⣼⣿⠘⠀⠀⠀⢠⣶⣿⡆⠀⠀⠁⣠⠊⣸⣿⣿⣿⡄⠀⠀⠀⡇⠀⢑⣄⠀⠀⠀⠀⠀⠀⢠⠃⠀⠀⠸⡆",
-    L"⠀⣿⢰⣿⣿⠀⠀⠀⠀⠙⠻⠿⠁⠀⠀⠠⠁⠀⣿⣿⣿⣿⡇⠀⠀⠀⠇⠀⢻⣿⣷⣦⣀⡀⣀⠠⠋⠀⠀⠀⢀⡇",
-    L"⠈⠉⠺⠿⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⢿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠈⢿⣿⣿⣿⣿⢦⡀⠀⠀⠀⠀⡸⠀",
-    L"⠘⣟⠦⢀⠀⠀⢠⠀⠀⡠⠀⠀⠀⠀⠀⠀⠉⠉⠉⠉⠁⣀⠔⠀⠀⠀⠀⠀⠀⠀⠛⠻⠟⠋⠀⠙⢦⠀⣠⠜⠀⠀",
-    L"⠀⠈⠑⠤⡙⠳⣶⣦⣤⣤⣤⣤⣤⣤⣤⣤⣴⣶⡶⠞⠁⠀⠀⣠⠖⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠈⢯⠁⠀⠀⠀",
-    L"⠀⠀⠀⠀⠈⢳⠤⣙⡻⠿⣿⣿⣿⣿⡿⠿⠛⠉⠀⢀⣀⡤⡚⠁⠀⠀⠀⠀⠀⠀⣧⠖⣁⣤⣦⠀⠀⠈⢇⠀⠀⠀",
-    L"⠀⠀⠀⠀⠀⢸⠀⢀⣩⣍⠓⠒⣒⠒⠒⠒⠒⠊⠉⠁⢀⡟⠀⠀⣾⣷⠀⠀⠀⠀⠏⢴⣿⣿⣿⠀⠀⠀⢸⠀⠀⠀",
-    L"⠀⠀⠀⠀⠀⠘⣶⣿⣿⣿⠀⠀⠈⠒⢄⣀⡀⠀⠀⠀⣼⣶⣿⡇⠈⠋⠀⠀⠀⡼⠀⠈⠻⣿⡿⠀⠀⠀⢸⠀⠀⠀",
-    L"⠀⠀⠀⠀⠀⠀⠹⡿⠿⠋⠀⠀⠀⠀⡜⠁⠈⢯⡀⢺⣿⣿⣿⠃⠀⠀⠀⢀⣼⣇⠀⠀⠀⠀⠀⠀⠀⠀⡞⠀⠀⠀",
-    L"⠀⠀⠀⠀⠀⠀⠀⣿⣦⣄⣠⣀⣠⠞⠀⠀⠀⠈⠛⣿⡛⠛⠁⠀⠀⠀⣠⠊⠀⠈⢦⣄⣀⣀⣀⣀⢀⡼⠁⠀⠀⠀",
-    L"⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠛⠉⠀⠀⠀⠀⠀⠀⠘⠛⠿⣿⠷⡾⠗⠊⠁⠀⠀⠀⠈⠉⠙⠛⠛⠛⠉⠀⠀⠀⠀⠀"
-};
-
-static const std::vector<std::string>& getAsciiForPokemon(const std::string& nume) {
-    if (nume == "Pikachu") return ASCII_PIKACHU;
-    if (nume == "Bulbasaur") return ASCII_BULBASAUR;
-    if (nume == "Charmander") return ASCII_CHARMANDER;
-    if (nume == "Squirtle") return ASCII_SQUIRTLE;
-    return ASCII_PIKACHU; // fallback
+    return msg;
 }
 
-static void drawAsciiArt(int y, int x, const std::vector<std::string>& art) {
-    for (size_t i = 0; i < art.size(); ++i) {
-        mvprintw(y + i, x, "%s", art[i].c_str());
-    }
-}
-
-static int asciiWidth(const std::vector<std::wstring>& art) {
-    size_t maxLen = 0;
-    for (const auto& line : art) {
-        if (line.size() > maxLen)
-            maxLen = line.size();
-    }
-    return static_cast<int>(maxLen);
-}
-
-static void drawAsciiArtWide(int y, int x, const std::vector<std::wstring>& art) {
-    static std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-    for (size_t i = 0; i < art.size(); ++i) {
-        std::string utf8 = converter.to_bytes(art[i]);
-        mvaddstr(y + i, x, utf8.c_str());
-    }
-}
-*/
 Arena::Arena() {
-
-    listaPokemoni.emplace_back("Pikachu", "Electric", 1200, 55, 40, 90);
-    listaPokemoni.emplace_back("Bulbasaur", "Iarba",   1400, 49, 49, 45);
-    listaPokemoni.emplace_back("Charmander", "Foc",    1200, 52, 43, 65);
-    listaPokemoni.emplace_back("Squirtle", "Apa",      1300, 48, 65, 43);
+    listaPokemoni = GameConfig::getInstance().getPokemons();
 }
 
 void Arena::afiseazaLeaderboard() {
@@ -173,7 +35,8 @@ void Arena::afiseazaLeaderboard() {
     std::cout << "==========================\n";
     fin.close();
 }
- void Arena::actualizeazaLeaderboard(const std::string& castigator) {
+
+void Arena::actualizeazaLeaderboard(const std::string& castigator) {
     std::ifstream fin("leaderboard.txt");
     std::vector<std::string> nume;
     std::vector<int> scoruri;
@@ -222,11 +85,8 @@ void Arena::salveazaProgres(const Player& p1, const Player& p2){
 }
 
 void Arena::startGame() const {
-    std::cout << "=== Pokemon Arena ===\n";
-    std::cout << "1. Continuă ultimul meci\n";
-    std::cout << "2. Joc nou\n";
-    std::cout << "3. Afiseaza leaderboard-ul\n";
-    std::cout << "Alege optiunea: ";
+    std::cout << GameConfig::getInstance().getMessage("start_game_title");
+    std::cout << GameConfig::getInstance().getMessage("menu_options");
 
     int opt;
     std::cin >> opt;
@@ -234,7 +94,7 @@ void Arena::startGame() const {
     if (opt == 1) {
         std::ifstream fin("save.txt");
         if (!fin.is_open()) {
-            std::cout << "Nu există un fisier de salvare.\n";
+            std::cout << GameConfig::getInstance().getMessage("save_file_missing");
         } else {
             std::string nume1, poke1, nume2, poke2;
             int hp1, hp2;
@@ -265,29 +125,28 @@ void Arena::startGame() const {
                 p1.setPokemon(pk1);
                 p2.setPokemon(pk2);
 
-                std::cout << "\n=== Joc incarcat cu succes! ===\n";
+                std::cout << GameConfig::getInstance().getMessage("game_load_success");
                 std::cout << pk1 << "\n" << pk2 << "\n";
 
-                desfasoaraLupta(p1, p2);
+                const_cast<Arena*>(this)->desfasoaraLupta(p1, p2);
                 return;
             } else {
-                std::cout << "Eroare: Pokemonii salvati nu au fost gasiti.\n";
+                std::cout << GameConfig::getInstance().getMessage("game_load_fail");
             }
         }
     }
     else if (opt == 2) {
-        std::cout << "=== Pokemon Arena ===\n";
-        std::cout << "1. Player vs Player\n";
-        std::cout << "2. Player vs AI\n";
-        std::cout << "Alege modul: ";
+        std::cout << GameConfig::getInstance().getMessage("choose_mode_msg");
 
         int mod;
         std::cin >> mod;
         std::string numeP1, numeP2;
-        std::cout << "Introdu numele pentru Player 1: ";
+
+        std::cout << GameConfig::getInstance().getMessage("enter_name_p1");
         std::cin >> numeP1;
+
         if (mod == 1) {
-            std::cout << "Introdu numele pentru Player 2: ";
+            std::cout << GameConfig::getInstance().getMessage("enter_name_p2");
             std::cin >> numeP2;
         } else {
             numeP2 = "AI";
@@ -306,30 +165,19 @@ void Arena::startGame() const {
             return;
         }
 
-        std::cout << "\n=== Lupta incepe! ===\n";
+        std::cout << GameConfig::getInstance().getMessage("battle_start");
         std::cout << p1 << "\n" << p2 << "\n";
 
-        desfasoaraLupta(p1, p2);
+        const_cast<Arena*>(this)->desfasoaraLupta(p1, p2);
 
     } else if (opt == 3) {
-        afiseazaLeaderboard();
+        const_cast<Arena*>(this)->afiseazaLeaderboard();
     }
-
-
 }
 
 void Arena::desfasoaraLupta(Player& p1, Player& p2) {
     setlocale(LC_ALL, "");
-    /*initscr();
-    noecho();
-    cbreak();
-    keypad(stdscr, TRUE);
-    curs_set(0);
-    start_color();
-    init_pair(1, COLOR_GREEN, COLOR_BLACK);
-    init_pair(2, COLOR_YELLOW, COLOR_BLACK);
-    init_pair(3, COLOR_RED, COLOR_BLACK);
-*/
+
     const Pokemon& poke1 = p1.getPokemon();
     const Pokemon& poke2 = p2.getPokemon();
 
@@ -348,23 +196,25 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
         else { first = &p2; second = &p1; }
     }
 
-    std::cout << first->getNume() << " va incepe primul!\n";
+    std::string msg = GameConfig::getInstance().getMessage("first_turn");
+    msg = formatMessage(msg, "{name}", first->getNume());
+    std::cout << msg;
 
    while (poke1.esteViu() && poke2.esteViu()) {
 
         Pokemon& attacker = first->getPokemon();
         Pokemon& defender = second->getPokemon();
 
-
         if (attacker.isStunned()) {
-            std::cout << "\n" << attacker.getNume() << " este paralizat si pierde randul!\n";
-            attacker.setStunned(false); // Stun-ul trece
+            std::string stunMsg = GameConfig::getInstance().getMessage("stunned_msg");
+            stunMsg = formatMessage(stunMsg, "{name}", attacker.getNume());
+            std::cout << stunMsg;
+            attacker.setStunned(false);
         }
         else {
-            std::cout << "\n" << first->getNume() << ", alege o actiune:\n";
-            std::cout << "1. Atac normal\n";
-            std::cout << "2. Aparare\n";
-            std::cout << "3. Abilitate speciala\n> ";
+            std::string menuMsg = GameConfig::getInstance().getMessage("battle_action_menu");
+            menuMsg = formatMessage(menuMsg, "{name}", first->getNume());
+            std::cout << menuMsg;
 
             int actiune;
             if (first->getNume() == "AI") {
@@ -377,37 +227,34 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
                 attacker.ataca(defender);
             } else if (actiune == 2) {
                 attacker.setDefending(true);
-                std::cout << attacker.getNume() << " se apara!\n";
+                std::cout << attacker.getNume() << " a ales sa se apare.\n";
             } else if (actiune == 3) {
                 attacker.folosesteAbilitate(defender);
             } else {
-                std::cout << "Actiune invalida. Se considera atac normal.\n";
+                std::cout << GameConfig::getInstance().getMessage("invalid_action");
                 attacker.ataca(defender);
             }
         }
-
-
 
         if (defender.esteViu())
         {
             Pokemon& attacker2 = second->getPokemon();
             Pokemon& defender2 = first->getPokemon();
 
-
             if (attacker2.isStunned()) {
-                std::cout << "\n" << attacker2.getNume() << " este paralizat si pierde randul!\n";
+                std::string stunMsg = GameConfig::getInstance().getMessage("stunned_msg");
+                stunMsg = formatMessage(stunMsg, "{name}", attacker2.getNume());
+                std::cout << stunMsg;
                 attacker2.setStunned(false);
             }
             else {
-                std::cout << "\n" << second->getNume() << ", alege o actiune:\n";
-                std::cout << "1. Atac normal\n";
-                std::cout << "2. Aparare\n";
-                std::cout << "3. Abilitate speciala\n> ";
+                std::string menuMsg = GameConfig::getInstance().getMessage("battle_action_menu");
+                menuMsg = formatMessage(menuMsg, "{name}", second->getNume());
+                std::cout << menuMsg;
 
                 int actiune;
                 if (second->getNume() == "AI") {
                     actiune = distrib(gen);
-                    std::cout << actiune << "\n";
                 } else {
                     std::cin >> actiune;
                 }
@@ -416,11 +263,11 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
                     attacker2.ataca(defender2);
                 } else if (actiune == 2) {
                     attacker2.setDefending(true);
-                    std::cout << attacker2.getNume() << " se apara!\n";
+                    std::cout << attacker2.getNume() << " a ales sa se apare.\n";
                 } else if (actiune == 3) {
                     attacker2.folosesteAbilitate(defender2);
                 } else {
-                    std::cout << "Actiune invalida. Se considera atac normal.\n";
+                    std::cout << GameConfig::getInstance().getMessage("invalid_action");
                     attacker2.ataca(defender2);
                 }
             }
@@ -428,24 +275,32 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
 
         p1.getPokemon().reduceCooldown();
         p2.getPokemon().reduceCooldown();
+
+        std::cout << "\n----------------------------------------\n";
+        std::cout << "STATUS:\n";
+        std::cout << p1.getNume() << " [" << p1.getPokemon().getNume() << "]: "
+                  << p1.getPokemon().getHP() << " HP\n";
+
+        std::cout << p2.getNume() << " [" << p2.getPokemon().getNume() << "]: "
+                  << p2.getPokemon().getHP() << " HP\n";
+        std::cout << "----------------------------------------\n";
+
         salveazaProgres(p1, p2);
-
     }
-
 
     std::string castigator;
     if (poke1.esteViu()){
-        std::cout << p1.getNume() << " a castigat!\n";
         castigator = p1.getNume();
-    }
-    else{
-        std::cout << p2.getNume() << " a castigat!\n";
+    } else{
         castigator = p2.getNume();
     }
+
+    std::string winMsg = GameConfig::getInstance().getMessage("win_msg");
+    winMsg = formatMessage(winMsg, "{name}", castigator);
+    std::cout << winMsg;
+
     actualizeazaLeaderboard(castigator);
-
     std::remove("save.txt");
-
 }
 
 std::ostream& operator<<(std::ostream& out, const Arena& a) {
@@ -453,7 +308,7 @@ std::ostream& operator<<(std::ostream& out, const Arena& a) {
     out << "Numar total de pokemoni disponibili: " << a.listaPokemoni.size() << "\n";
     out << "Lista pokemoni:\n";
     for (const auto& p : a.listaPokemoni) {
-         out << p << ")\n";
+         out << p << "\n";
     }
     out << "=========================\n";
     return out;

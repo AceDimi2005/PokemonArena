@@ -1,24 +1,32 @@
 #include "../headers/GrassAbility.h"
 #include "../headers/Pokemon.h"
+#include "../headers/GameConfig.h"
 #include <iostream>
+#include <string>
 
-
-float GrassAbility::getEfficiency(const std::string& adversarTip) const {
-    if (adversarTip == "Apa") return 2.0f;
-    if (adversarTip == "Foc") return 0.5f;
-    return 1.0f;
+static std::string formatMessage(std::string msg, const std::string& key, const std::string& value) {
+    size_t pos;
+    while ((pos = msg.find(key)) != std::string::npos) {
+        msg.replace(pos, key.length(), value);
+    }
+    return msg;
 }
 
 GrassAbility::GrassAbility(int power)
     : power(power) {}
 
+float GrassAbility::getEfficiency(const std::string& adversarTip) const {
+    return GameConfig::getInstance().getTypeEfficiency("Iarba", adversarTip);
+}
 
 Ability* GrassAbility::clone() const {
     return new GrassAbility(*this);
 }
+
 void GrassAbility::printImpl() const {
     std::cout << "Grass ability (Vine Whip), power = " << power << "\n";
 }
+
 void GrassAbility::execute(Pokemon& atacator, Pokemon& aparator) const {
     float factor = getEfficiency(aparator.getTip());
 
@@ -32,7 +40,10 @@ void GrassAbility::execute(Pokemon& atacator, Pokemon& aparator) const {
     int recoil = damage / 3;
     if (recoil > 0) {
         atacator.primesteDamage(recoil);
-        std::cout << atacator.getNume() << " a suferit " << recoil
-                  << " damage din cauza reculului loviturii puternice!\n";
+
+        std::string msg = GameConfig::getInstance().getMessage("grass_recoil");
+        msg = formatMessage(msg, "{name}", atacator.getNume());
+        msg = formatMessage(msg, "{amount}", std::to_string(recoil));
+        std::cout << msg;
     }
 }

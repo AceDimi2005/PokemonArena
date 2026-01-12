@@ -1,24 +1,35 @@
 #include "../headers/Pokemon.h"
 #include "../headers/Ability.h"
 #include "../headers/AbilityFactory.h"
+#include "../headers/GameConfig.h"
+#include "../headers/ElectricAbility.h"
+#include "../headers/GameException.h"
 
 #include <iostream>
 #include <utility>
 #include <memory>
+#include <string>
 
-#include "../headers/FireAbility.h"
-#include "../headers/WaterAbility.h"
-#include "../headers/ElectricAbility.h"
-#include "../headers/GrassAbility.h"
-#include "../headers/GameException.h"
+static std::string formatMessage(std::string msg, const std::string& key, const std::string& value) {
+    size_t pos;
+    while ((pos = msg.find(key)) != std::string::npos) {
+        msg.replace(pos, key.length(), value);
+    }
+    return msg;
+}
 
 void Pokemon::heal(int amount) {
     hp += amount;
     if (hp > maxHp) {
         hp = maxHp;
     }
-    std::cout << nume << " s-a vindecat cu " << amount << " HP!\n";
+
+    std::string msg = GameConfig::getInstance().getMessage("heal_msg");
+    msg = formatMessage(msg, "{name}", nume);
+    msg = formatMessage(msg, "{amount}", std::to_string(amount));
+    std::cout << msg;
 }
+
 void Pokemon::valideaza() const {
     if (hp <= 0 || attack < 0 || defense < 0 || speed < 0)
         throw InvalidPokemonException();
@@ -36,7 +47,6 @@ Pokemon::Pokemon(std::string nume, std::string tip, int hp, int attack, int defe
     : cooldown(0), cooldownMax(0), defending(false),
       nume(std::move(nume)), tip(std::move(tip)),
       hp(hp), maxHp(hp), attack(attack), defense(defense), speed(speed),
-
       abilitate(AbilityFactory::create(this->tip)) {
 
     if (abilitate) {
@@ -45,7 +55,6 @@ Pokemon::Pokemon(std::string nume, std::string tip, int hp, int attack, int defe
         cooldownMax = 0;
     }
 
-    cooldown = 0;
     cooldown = 0;
 }
 
@@ -92,7 +101,10 @@ void Pokemon::reduceCooldown() {
 
 int Pokemon::folosesteAbilitate(Pokemon& adversar) {
     if (!poateFolosiiAbilitatea()) {
-        std::cout << nume << " nu isi poate folosi abilitatea inca! (" << cooldown << " runde ramase)\n";
+        std::string msg = GameConfig::getInstance().getMessage("ability_cooldown");
+        msg = formatMessage(msg, "{name}", nume);
+        msg = formatMessage(msg, "{cooldown}", std::to_string(cooldown));
+        std::cout << msg;
         return 0;
     }
 
@@ -101,15 +113,16 @@ int Pokemon::folosesteAbilitate(Pokemon& adversar) {
 
     if (auto* electric = dynamic_cast<ElectricAbility*>(abilitate.get())) {
         electric->overcharge();
-        std::cout << nume << " isi incarca electricitatea!\n";
+        std::string msg = GameConfig::getInstance().getMessage("electric_overcharge");
+        msg = formatMessage(msg, "{name}", nume);
+        std::cout << msg;
     }
 
     abilitate->print();
 
-    abilitate->execute(*this, adversar);;
+    abilitate->execute(*this, adversar);
     reseteazaAbilitatea();
     return 0;
-
 }
 
 const std::string& Pokemon::getNume() const { return nume; }
@@ -123,16 +136,9 @@ void Pokemon::setDefending(bool value) { defending = value; }
 int Pokemon::getAttack() const {
     return attack;
 }
+
 float Pokemon::eficientaTip(const std::string& tipAtacant, const std::string& tipAdversar) {
-    if (tipAtacant == "Foc" && tipAdversar == "Iarba") return 2.0f;
-    if (tipAtacant == "Foc" && tipAdversar == "Apa") return 0.5f;
-    if (tipAtacant == "Apa" && tipAdversar == "Foc") return 2.0f;
-    if (tipAtacant == "Apa" && tipAdversar == "Iarba") return 0.5f;
-    if (tipAtacant == "Iarba" && tipAdversar == "Apa") return 2.0f;
-    if (tipAtacant == "Iarba" && tipAdversar == "Foc") return 0.5f;
-    if (tipAtacant == "Electric" && tipAdversar == "Apa") return 2.0f;
-    if (tipAtacant == "Electric" && tipAdversar == "Iarba") return 0.5f;
-    return 1.0f;
+    return GameConfig::getInstance().getTypeEfficiency(tipAtacant, tipAdversar);
 }
 
 int Pokemon::ataca(Pokemon& adversar) const {
@@ -141,12 +147,18 @@ int Pokemon::ataca(Pokemon& adversar) const {
     if (damage < 0) damage = 0;
 
     adversar.primesteDamage(damage);
-    std::cout << nume << " a atacat " << adversar.getNume() << " si a provocat " << damage << " damage!\n";
 
-    if (factor > 1.0f)
-        std::cout << "Este foarte eficient!\n";
-    else if (factor < 1.0f)
-        std::cout << "Nu este prea eficient...\n";
+    std::string msg = GameConfig::getInstance().getMessage("attack_msg");
+    msg = formatMessage(msg, "{attacker}", nume);
+    msg = formatMessage(msg, "{defender}", adversar.getNume());
+    msg = formatMessage(msg, "{damage}", std::to_string(damage));
+    std::cout << msg;
+
+    if (factor > 1.0f) {
+        std::cout << GameConfig::getInstance().getMessage("super_effective");
+    } else if (factor < 1.0f) {
+        std::cout << GameConfig::getInstance().getMessage("not_very_effective");
+    }
 
     return damage;
 }
@@ -154,7 +166,10 @@ int Pokemon::ataca(Pokemon& adversar) const {
 void Pokemon::primesteDamage(int damage) {
     if (defending) {
         damage /= 2;
-        std::cout << nume << " s-a aparat si a redus damage-ul la " << damage << "!\n";
+        std::string msg = GameConfig::getInstance().getMessage("defense_msg");
+        msg = formatMessage(msg, "{name}", nume);
+        msg = formatMessage(msg, "{damage}", std::to_string(damage));
+        std::cout << msg;
         defending = false;
     }
 

@@ -70,11 +70,25 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         PokemonArena/headers/GameException.h
         PokemonArena/source/AbilityFactory.cpp
         PokemonArena/headers/AbilityFactory.h
+        PokemonArena/source/GameConfig.cpp
+        PokemonArena/headers/GameConfig.h
+        PokemonArena/headers/GameConfig.h
 )
 
 target_include_directories(${MAIN_EXECUTABLE_NAME} PRIVATE ${CURSES_INCLUDE_DIR})
 target_link_libraries(${MAIN_EXECUTABLE_NAME} PRIVATE ${CURSES_LIBRARIES})
 
+FetchContent_Declare(
+        json
+        URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
+)
+FetchContent_MakeAvailable(json)
+
+target_link_libraries(${MAIN_EXECUTABLE_NAME}
+        PRIVATE
+        ${CURSES_LIBRARIES}
+        nlohmann_json::nlohmann_json
+)
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
 # NOTE: RUN_SANITIZERS is optional, if it's not present it will default to true
 set_compiler_flags(RUN_SANITIZERS TRUE TARGET_NAMES ${MAIN_EXECUTABLE_NAME})
@@ -100,6 +114,7 @@ if(APPLE)
 endif()
 
 copy_files(FILES tastatura.txt COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
+copy_files(FILES tastatura.txt config.json COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
 # copy_files(FILES tastatura.txt config.json DIRECTORY images sounds COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
 # copy_files(DIRECTORY images sounds COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
 
