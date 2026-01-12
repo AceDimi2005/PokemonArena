@@ -15,8 +15,7 @@ static std::string formatMessage(std::string msg, const std::string& key, const 
     return msg;
 }
 
-Arena::Arena() {
-    listaPokemoni = GameConfig::getInstance().getPokemons();
+Arena::Arena() : listaPokemoni(GameConfig::getInstance().getPokemons()) {
 }
 
 void Arena::afiseazaLeaderboard() {
