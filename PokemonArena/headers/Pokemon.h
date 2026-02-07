@@ -7,6 +7,12 @@
 
 class Ability;
 
+template <typename T>
+T applyModifier(T baseValue, T modifier, T minValue = 0) {
+    T result = baseValue + modifier;
+    return (result < minValue) ? minValue : result;
+}
+
 class Pokemon {
 private:
     int cooldown;
@@ -30,9 +36,10 @@ public:
     Pokemon(const Pokemon& other);
     Pokemon& operator=(Pokemon other);
     ~Pokemon();
+
     void heal(int amount);
     void modifyDefense(int amount);
-    void modifyAttack(int amount) { attack += amount; }
+    void modifyAttack(int amount) { attack = applyModifier<int>(attack, amount); }
 
     void setStunned(bool val) { stunned = val; }
     [[nodiscard]] bool isStunned() const { return stunned; }
@@ -58,7 +65,6 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, const Pokemon& p);
     friend void swap(Pokemon& a, Pokemon& b) noexcept;
-
 };
 
 #endif

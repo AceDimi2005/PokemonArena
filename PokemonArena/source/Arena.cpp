@@ -127,7 +127,7 @@ void Arena::startGame() const {
                 std::cout << GameConfig::getInstance().getMessage("game_load_success");
                 std::cout << pk1 << "\n" << pk2 << "\n";
 
-                const_cast<Arena*>(this)->desfasoaraLupta(p1, p2);
+                desfasoaraLupta(p1, p2);
                 return;
             } else {
                 std::cout << GameConfig::getInstance().getMessage("game_load_fail");
@@ -167,18 +167,18 @@ void Arena::startGame() const {
         std::cout << GameConfig::getInstance().getMessage("battle_start");
         std::cout << p1 << "\n" << p2 << "\n";
 
-        const_cast<Arena*>(this)->desfasoaraLupta(p1, p2);
+        desfasoaraLupta(p1, p2);
 
     } else if (opt == 3) {
-        const_cast<Arena*>(this)->afiseazaLeaderboard();
+        afiseazaLeaderboard();
     }
 }
 
-void Arena::desfasoaraLupta(Player& p1, Player& p2) {
+void Arena::desfasoaraLupta(Player& p1, Player& p2) const {
     setlocale(LC_ALL, "");
 
-    const Pokemon& poke1 = p1.getPokemon();
-    const Pokemon& poke2 = p2.getPokemon();
+    Pokemon& poke1 = p1.getPokemon();
+    Pokemon& poke2 = p2.getPokemon();
 
     Player* first;
     Player* second;
@@ -200,76 +200,52 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
     std::cout << msg;
 
    while (poke1.esteViu() && poke2.esteViu()) {
+        Player* currentPlayers[] = {first, second};
 
-        Pokemon& attacker = first->getPokemon();
-        Pokemon& defender = second->getPokemon();
+        for (int i = 0; i < 2; ++i) {
+            Player* active = currentPlayers[i];
+            Player* inactive = (i == 0) ? second : first;
+            Pokemon& attacker = active->getPokemon();
+            Pokemon& defender = inactive->getPokemon();
 
-        if (attacker.isStunned()) {
-            std::string stunMsg = GameConfig::getInstance().getMessage("stunned_msg");
-            stunMsg = formatMessage(stunMsg, "{name}", attacker.getNume());
-            std::cout << stunMsg;
-            attacker.setStunned(false);
-        }
-        else {
-            std::string menuMsg = GameConfig::getInstance().getMessage("battle_action_menu");
-            menuMsg = formatMessage(menuMsg, "{name}", first->getNume());
-            std::cout << menuMsg;
+            if (!attacker.esteViu()) continue;
 
-            int actiune;
-            if (first->getNume() == "AI") {
-                actiune = distrib(gen);
-            } else {
-                std::cin >> actiune;
-            }
-
-            if (actiune == 1) {
-                attacker.ataca(defender);
-            } else if (actiune == 2) {
-                attacker.setDefending(true);
-                std::cout << attacker.getNume() << " a ales sa se apare.\n";
-            } else if (actiune == 3) {
-                attacker.folosesteAbilitate(defender);
-            } else {
-                std::cout << GameConfig::getInstance().getMessage("invalid_action");
-                attacker.ataca(defender);
-            }
-        }
-
-        if (defender.esteViu())
-        {
-            Pokemon& attacker2 = second->getPokemon();
-            Pokemon& defender2 = first->getPokemon();
-
-            if (attacker2.isStunned()) {
+            if (attacker.isStunned()) {
                 std::string stunMsg = GameConfig::getInstance().getMessage("stunned_msg");
-                stunMsg = formatMessage(stunMsg, "{name}", attacker2.getNume());
+                stunMsg = formatMessage(stunMsg, "{name}", attacker.getNume());
                 std::cout << stunMsg;
-                attacker2.setStunned(false);
+                attacker.setStunned(false);
             }
             else {
                 std::string menuMsg = GameConfig::getInstance().getMessage("battle_action_menu");
-                menuMsg = formatMessage(menuMsg, "{name}", second->getNume());
+                menuMsg = formatMessage(menuMsg, "{name}", active->getNume());
                 std::cout << menuMsg;
 
                 int actiune;
-                if (second->getNume() == "AI") {
+                if (active->getNume() == "AI") {
                     actiune = distrib(gen);
                 } else {
                     std::cin >> actiune;
                 }
 
                 if (actiune == 1) {
-                    attacker2.ataca(defender2);
+                    int dmg = attacker.ataca(defender);
+                    actionHistory.add(active->getNume() + " a atacat normal.");
+                    damageHistory.add(dmg);
                 } else if (actiune == 2) {
-                    attacker2.setDefending(true);
-                    std::cout << attacker2.getNume() << " a ales sa se apare.\n";
+                    attacker.setDefending(true);
+                    std::cout << attacker.getNume() << " a ales sa se apare.\n";
+                    actionHistory.add(active->getNume() + " s-a aparat.");
                 } else if (actiune == 3) {
-                    attacker2.folosesteAbilitate(defender2);
+                    attacker.folosesteAbilitate(defender);
+                    actionHistory.add(active->getNume() + " a folosit abilitatea.");
                 } else {
                     std::cout << GameConfig::getInstance().getMessage("invalid_action");
-                    attacker2.ataca(defender2);
+                    int dmg = attacker.ataca(defender);
+                    damageHistory.add(dmg);
                 }
             }
+            if (!defender.esteViu()) break;
         }
 
         p1.getPokemon().reduceCooldown();
@@ -287,16 +263,14 @@ void Arena::desfasoaraLupta(Player& p1, Player& p2) {
         salveazaProgres(p1, p2);
     }
 
-    std::string castigator;
-    if (poke1.esteViu()){
-        castigator = p1.getNume();
-    } else{
-        castigator = p2.getNume();
-    }
+    std::string castigator = poke1.esteViu() ? p1.getNume() : p2.getNume();
 
     std::string winMsg = GameConfig::getInstance().getMessage("win_msg");
     winMsg = formatMessage(winMsg, "{name}", castigator);
     std::cout << winMsg;
+
+    actionHistory.showAll("Istoric Actiuni Lupta");
+    std::cout << "Total damage provocat in aceasta sesiune: " << damageHistory.getTotalValue() << "\n";
 
     actualizeazaLeaderboard(castigator);
     std::remove("save.txt");

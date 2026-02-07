@@ -4,11 +4,17 @@
 #include <vector>
 #include <iostream>
 #include "Player.h"
+#include "BattleHistory.h"
 
 class Arena {
 private:
     std::vector<Pokemon> listaPokemoni;
-    static void desfasoaraLupta(Player& p1, Player& p2);
+
+    mutable BattleHistory<std::string> actionHistory;
+
+    mutable BattleHistory<int> damageHistory;
+
+    void desfasoaraLupta(Player& p1, Player& p2) const;
 
 public:
     Arena();

@@ -73,6 +73,8 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         PokemonArena/source/GameConfig.cpp
         PokemonArena/headers/GameConfig.h
         PokemonArena/headers/GameConfig.h
+        PokemonArena/source/BattleHistory.cpp
+        PokemonArena/headers/BattleHistory.h
 )
 
 target_include_directories(${MAIN_EXECUTABLE_NAME} PRIVATE ${CURSES_INCLUDE_DIR})

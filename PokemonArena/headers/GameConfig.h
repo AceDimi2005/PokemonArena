@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <map>
 #include <nlohmann/json.hpp>
 #include "Pokemon.h"
 
@@ -11,6 +10,9 @@ private:
     GameConfig();
 
 public:
+    GameConfig(const GameConfig&) = delete;
+    GameConfig& operator=(const GameConfig&) = delete;
+
     static GameConfig& getInstance();
 
     std::vector<Pokemon> getPokemons() const;

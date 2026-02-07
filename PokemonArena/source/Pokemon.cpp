@@ -19,7 +19,8 @@ static std::string formatMessage(std::string msg, const std::string& key, const 
 }
 
 void Pokemon::heal(int amount) {
-    hp += amount;
+    hp = applyModifier<int>(hp, amount);
+
     if (hp > maxHp) {
         hp = maxHp;
     }
@@ -173,8 +174,7 @@ void Pokemon::primesteDamage(int damage) {
         defending = false;
     }
 
-    hp -= damage;
-    if (hp < 0) hp = 0;
+    hp = applyModifier<int>(hp, -damage, 0);
 }
 
 std::ostream& operator<<(std::ostream& out, const Pokemon& p) {
